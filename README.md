@@ -13,6 +13,47 @@ y Spotify Connect. Interfaz «Mac 1-bit» con tema claro y oscuro.
 
 Hecho con **Tauri 2 + Rust + Svelte 5 + libmpv**. Sin Electron y sin tracking.
 
+## Descargar
+
+<p align="center">
+  <a href="https://github.com/YaMeAsesore/catPet/releases/latest">
+    <img src="https://img.shields.io/badge/Descargar-AppImage%20Linux%20x86__64-14130F?style=for-the-badge&logo=linux&logoColor=white" alt="Descargar AppImage para Linux" />
+  </a>
+  <a href="https://github.com/YaMeAsesore/catPet/releases/latest/download/musica_0.1.0_amd64.deb">
+    <img src="https://img.shields.io/badge/Descargar-.deb-14130F?style=for-the-badge&logo=debian&logoColor=white" alt="Descargar paquete .deb" />
+  </a>
+  <a href="https://github.com/YaMeAsesore/catPet/releases/latest/download/musica-0.1.0-1.x86_64.rpm">
+    <img src="https://img.shields.io/badge/Descargar-.rpm-14130F?style=for-the-badge&logo=fedora&logoColor=white" alt="Descargar paquete .rpm" />
+  </a>
+</p>
+
+| Formato | Enlace | Notas |
+| --- | --- | --- |
+| **AppImage** (recomendado) | [musica_0.1.0_amd64.AppImage](https://github.com/YaMeAsesore/catPet/releases/latest/download/musica_0.1.0_amd64.AppImage) | Linux x86_64; usar con `Musica.sh` |
+| **Debian / Ubuntu** | [musica_0.1.0_amd64.deb](https://github.com/YaMeAsesore/catPet/releases/latest/download/musica_0.1.0_amd64.deb) | `sudo apt install ./musica_0.1.0_amd64.deb` |
+| **Fedora / OpenSUSE** | [musica-0.1.0-1.x86_64.rpm](https://github.com/YaMeAsesore/catPet/releases/latest/download/musica-0.1.0-1.x86_64.rpm) | `sudo dnf install ./musica-0.1.0-1.x86_64.rpm` |
+| Lanzador AppImage | [Musica.sh](https://github.com/YaMeAsesore/catPet/releases/latest/download/Musica.sh) | Debe ir junto a la AppImage |
+| Instrucciones | [LEEME.txt](https://github.com/YaMeAsesore/catPet/releases/latest/download/LEEME.txt) | Requisitos y solución de problemas |
+| Hashes | [SHA256SUMS.txt](https://github.com/YaMeAsesore/catPet/releases/latest/download/SHA256SUMS.txt) | Verificación de descargas |
+
+**AppImage (recomendado)**
+
+```bash
+chmod +x Musica.sh
+./Musica.sh
+```
+
+Si la ventana no aparece o se ve negra:
+
+```bash
+./Musica.sh soft
+```
+
+[Ver todos los releases](https://github.com/YaMeAsesore/catPet/releases)
+
+> **Windows:** todavía no hay binario publicado. El instalador NSIS se puede
+> generar con el workflow `Windows` del repositorio.
+
 ## Características
 
 - **Biblioteca local**: escaneo incremental, etiquetas con `lofty`, SQLite +
