@@ -1,4 +1,4 @@
-<!-- «Acerca de Música»: ficha de la app con las dos mascotas de la marca.
+<!-- «Acerca de catPet»: ficha de la app con las dos mascotas de la marca.
      Usa las imágenes 3 y 4 vectorizadas (gato y personaje con auriculares) y
      el logo vinilo-play. Solo presentación; se cierra con Esc, × o «Cerrar». -->
 <script lang="ts">
@@ -11,11 +11,11 @@
   let { onclose }: { onclose: () => void } = $props();
 </script>
 
-<ObModal title="Acerca de Música" icon="disc" ancho={620} onclose={onclose}>
+<ObModal title="Acerca de catPet" icon="disc" ancho={620} onclose={onclose}>
   <div class="about-head">
-    <BrandMark size={54} title="Música" />
+    <BrandMark size={54} title="catPet" />
     <div class="about-id">
-      <div class="about-name">Música <span class="about-ver">0.1.0</span></div>
+      <div class="about-name">catPet <span class="about-ver">0.1.0</span></div>
       <div class="about-sub">Reproductor local, sin anuncios ni tracking.</div>
     </div>
   </div>

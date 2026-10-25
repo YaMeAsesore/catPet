@@ -2860,7 +2860,7 @@ import { cropBlackBars } from "./lib/cropBlackBars";
     {
       label: "Ayuda",
       items: [
-        { label: "Acerca de Música…", icon: "disc", onSelect: () => (aboutOpen = true) },
+        { label: "Acerca de catPet…", icon: "disc", onSelect: () => (aboutOpen = true) },
         { label: "Atajos de teclado…", icon: "list", onSelect: () => (shortcutsOpen = true) },
       ],
     },
@@ -2973,7 +2973,7 @@ import { cropBlackBars } from "./lib/cropBlackBars";
       <div class="home-cover">
         <div class="home-cover-frame">
           <img class="home-cover-img" src={portada}
-            alt="Portada de Música: mascota geométrica con auriculares y ondas de sonido" />
+            alt="Portada de catPet: mascota geométrica con auriculares y ondas de sonido" />
         </div>
         <p class="home-cover-lead">Añade una carpeta o una fuente para empezar.</p>
         <div class="home-cover-actions">
@@ -3172,7 +3172,7 @@ import { cropBlackBars } from "./lib/cropBlackBars";
 {/if}
 
 {#if aboutOpen}
-  <!-- Ayuda › «Acerca de Música…»: ficha de marca con las mascotas. -->
+  <!-- Ayuda › «Acerca de catPet…»: ficha de marca con las mascotas. -->
   <AboutDialog onclose={() => (aboutOpen = false)} />
 {/if}
 

@@ -2,10 +2,10 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/portada-oscura.png" />
-  <img src="docs/assets/portada-clara.png" alt="Música: mascota geométrica con auriculares, ondas de sonido y el logo de vinilo y play" width="800" />
+  <img src="docs/assets/portada-clara.png" alt="catPet: mascota geométrica con auriculares, ondas de sonido y el logo de vinilo y play" width="800" />
 </picture>
 
-# Música
+# catPet
 
 **Reproductor de música de escritorio, ligero y sin anuncios.**
 
@@ -41,34 +41,34 @@ propios en una sola cola. El repositorio se llama **catPet**.
   <a href="https://github.com/YaMeAsesore/catPet/releases/latest">
     <img src="https://img.shields.io/badge/Descargar-AppImage%20Linux%20x86__64-14130F?style=for-the-badge&logo=linux&logoColor=white" alt="Descargar AppImage para Linux" />
   </a>
-  <a href="https://github.com/YaMeAsesore/catPet/releases/latest/download/musica_0.1.0_amd64.deb">
+  <a href="https://github.com/YaMeAsesore/catPet/releases/latest/download/catPet_0.1.0_amd64.deb">
     <img src="https://img.shields.io/badge/Descargar-.deb-14130F?style=for-the-badge&logo=debian&logoColor=white" alt="Descargar paquete .deb" />
   </a>
-  <a href="https://github.com/YaMeAsesore/catPet/releases/latest/download/musica-0.1.0-1.x86_64.rpm">
+  <a href="https://github.com/YaMeAsesore/catPet/releases/latest/download/catPet-0.1.0-1.x86_64.rpm">
     <img src="https://img.shields.io/badge/Descargar-.rpm-14130F?style=for-the-badge&logo=fedora&logoColor=white" alt="Descargar paquete .rpm" />
   </a>
 </p>
 
 | Formato | Enlace | Notas |
 | --- | --- | --- |
-| **AppImage** (recomendado) | [musica_0.1.0_amd64.AppImage](https://github.com/YaMeAsesore/catPet/releases/latest/download/musica_0.1.0_amd64.AppImage) | Linux x86_64; usar con `Musica.sh` |
-| **Debian / Ubuntu** | [musica_0.1.0_amd64.deb](https://github.com/YaMeAsesore/catPet/releases/latest/download/musica_0.1.0_amd64.deb) | `sudo apt install ./musica_0.1.0_amd64.deb` |
-| **Fedora / OpenSUSE** | [musica-0.1.0-1.x86_64.rpm](https://github.com/YaMeAsesore/catPet/releases/latest/download/musica-0.1.0-1.x86_64.rpm) | `sudo dnf install ./musica-0.1.0-1.x86_64.rpm` |
-| Lanzador AppImage | [Musica.sh](https://github.com/YaMeAsesore/catPet/releases/latest/download/Musica.sh) | Debe ir junto a la AppImage |
+| **AppImage** (recomendado) | [catPet_0.1.0_amd64.AppImage](https://github.com/YaMeAsesore/catPet/releases/latest/download/catPet_0.1.0_amd64.AppImage) | Linux x86_64; usar con `catPet.sh` |
+| **Debian / Ubuntu** | [catPet_0.1.0_amd64.deb](https://github.com/YaMeAsesore/catPet/releases/latest/download/catPet_0.1.0_amd64.deb) | `sudo apt install ./catPet_0.1.0_amd64.deb` |
+| **Fedora / OpenSUSE** | [catPet-0.1.0-1.x86_64.rpm](https://github.com/YaMeAsesore/catPet/releases/latest/download/catPet-0.1.0-1.x86_64.rpm) | `sudo dnf install ./catPet-0.1.0-1.x86_64.rpm` |
+| Lanzador AppImage | [catPet.sh](https://github.com/YaMeAsesore/catPet/releases/latest/download/catPet.sh) | Debe ir junto a la AppImage |
 | Instrucciones | [LEEME.txt](https://github.com/YaMeAsesore/catPet/releases/latest/download/LEEME.txt) | Requisitos y solución de problemas |
 | Hashes | [SHA256SUMS.txt](https://github.com/YaMeAsesore/catPet/releases/latest/download/SHA256SUMS.txt) | Verificación de descargas |
 
 **AppImage (recomendado)**
 
 ```bash
-chmod +x Musica.sh
-./Musica.sh
+chmod +x catPet.sh
+./catPet.sh
 ```
 
 Si la ventana no aparece o se ve negra:
 
 ```bash
-./Musica.sh soft
+./catPet.sh soft
 ```
 
 [Ver todos los releases](https://github.com/YaMeAsesore/catPet/releases)
@@ -78,9 +78,9 @@ Si la ventana no aparece o se ve negra:
 
 ---
 
-## Qué es Música
+## Qué es catPet
 
-Música es una alternativa ligera a Spotify y YouTube Music para el escritorio.
+catPet es una alternativa ligera a Spotify y YouTube Music para el escritorio.
 Reúne en una sola interfaz tu biblioteca local, el streaming de YouTube Music,
 tu cuenta de Spotify Premium, radios por URL, podcasts por RSS y servidores
 Subsonic, Navidrome o Jellyfin, todo con una única cola de reproducción.
@@ -88,7 +88,7 @@ Subsonic, Navidrome o Jellyfin, todo con una única cola de reproducción.
 No tiene anuncios, no envía telemetría y no guarda tus contraseñas.
 
 > [!NOTE]
-> Música no es un cliente de Spotify Free, no elude DRM y no está pensado para
+> catPet no es un cliente de Spotify Free, no elude DRM y no está pensado para
 > móvil.
 
 ---
@@ -154,30 +154,30 @@ de audio (PulseAudio, PipeWire o ALSA).
 ### AppImage
 
 ```bash
-chmod +x Musica.sh
-./Musica.sh
+chmod +x catPet.sh
+./catPet.sh
 ```
 
 La AppImage incluye la app, libmpv, WebKitGTK, GTK, GStreamer, `yt-dlp`, `deno` y
-`ffmpeg`. Si el sistema no tiene FUSE 2, `Musica.sh` usa extracción automática.
+`ffmpeg`. Si el sistema no tiene FUSE 2, `catPet.sh` usa extracción automática.
 
-En Wayland, `Musica.sh` fuerza `GDK_BACKEND=x11` porque WebKitGTK no crea la
+En Wayland, `catPet.sh` fuerza `GDK_BACKEND=x11` porque WebKitGTK no crea la
 ventana de forma fiable. Si sigue en negro:
 
 ```bash
-./Musica.sh soft
+./catPet.sh soft
 ```
 
 ### Debian / Ubuntu
 
 ```bash
-sudo apt install ./musica_0.1.0_amd64.deb
+sudo apt install ./catPet_0.1.0_amd64.deb
 ```
 
 ### Fedora / OpenSUSE
 
 ```bash
-sudo dnf install ./musica-0.1.0-1.x86_64.rpm
+sudo dnf install ./catPet-0.1.0-1.x86_64.rpm
 ```
 
 ### Windows
@@ -253,7 +253,7 @@ Consejos:
 
 ## Arquitectura
 
-Música separa la interfaz del motor: el frontend en Svelte solo dibuja el estado
+catPet separa la interfaz del motor: el frontend en Svelte solo dibuja el estado
 y envía intenciones; el backend en Rust gobierna la biblioteca, la red, el audio
 y los permisos.
 
@@ -338,11 +338,14 @@ Clic en una fila
 ├── playlists/<nombre>/playlist.m3u8
 ├── ytmusic-cookies.txt        (0600)
 ├── ytmusic-cookies.invalid    (si la sesión falló)
-├── musica.log
+├── catPet.log
 └── bin/                       (yt-dlp y ffmpeg propios, opcional)
 ```
 
 En Windows: `%APPDATA%\com.musica.app\`
+
+El identificador interno `com.musica.app` se conserva para no perder
+bibliotecas, playlists y cookies existentes.
 
 </details>
 
@@ -368,7 +371,7 @@ sistema.
 ## Estructura
 
 ```text
-musica/
+catPet/
 ├── index.html · package.json · vite.config.ts · svelte.config.js
 ├── src/
 │   ├── main.ts · App.svelte · styles.css
@@ -420,7 +423,7 @@ musica/
 
 > [!IMPORTANT]
 > Las descargas desde YouTube pueden ir en contra de sus Términos de Servicio.
-> Música lo advierte dentro de la app; el uso es responsabilidad de cada persona.
+> catPet lo advierte dentro de la app; el uso es responsabilidad de cada persona.
 
 - **Spotify:** solo cuentas Premium; la cola la gobierna Spotify mientras es el
   motor activo y el cambio entre motores es un fade-out/fade-in, no una mezcla
@@ -447,8 +450,8 @@ Las contribuciones son bienvenidas.
 5. Abre un Pull Request.
 
 Si encuentras un error, abre un [issue](https://github.com/YaMeAsesore/catPet/issues)
-e incluye tu sistema operativo, la versión de Música y el contenido de
-`musica.log` (sin datos personales).
+e incluye tu sistema operativo, la versión de catPet y el contenido de
+`catPet.log` (sin datos personales).
 
 ---
 
@@ -463,6 +466,6 @@ Los binarios y bibliotecas de terceros conservan sus licencias; consulta
 
 <div align="center">
 
-**Música** · Reproductor de escritorio · Hecho con Rust, Svelte y libmpv
+**catPet** · Reproductor de escritorio · Hecho con Rust, Svelte y libmpv
 
 </div>

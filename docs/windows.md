@@ -3,7 +3,7 @@
 ## CI
 
 `.github/workflows/windows.yml` corre en `windows-latest` y publica el
-artefacto **`musica-windows-nsis`** con `musica_0.1.0_x64-setup.exe`. Se
+artefacto **`catPet-windows-nsis`** con `catPet_0.1.0_x64-setup.exe`. Se
 dispara a mano (**Actions → Windows → Run workflow**) o al crear un tag `v*`.
 No usa secretos ni firma de código.
 
@@ -26,7 +26,7 @@ Los binarios se descargan con `tools/fetch-windows-deps.ps1` (o
 
 ## Instalación y tamaño
 
-- Instalación para el usuario actual en `%LOCALAPPDATA%\Programs\musica`.
+- Instalación para el usuario actual en `%LOCALAPPDATA%\Programs\catPet`.
 - Datos en `%APPDATA%\com.musica.app\library.db`.
 - Tamaño del instalador: del orden de 100 MB, sobre todo por `libmpv-2.dll`,
   `ffmpeg.exe` y `yt-dlp.exe`.
@@ -42,11 +42,11 @@ confianza.
 
 ## Checklist de pruebas manuales
 
-- [ ] El artefacto `musica-windows-nsis` descarga y el `.exe` instala sin pedir
+- [ ] El artefacto `catPet-windows-nsis` descarga y el `.exe` instala sin pedir
       administrador.
-- [ ] Queda `%LOCALAPPDATA%\Programs\musica` con `musica.exe`,
+- [ ] Queda `%LOCALAPPDATA%\Programs\catPet` con `catpet.exe`,
       `libmpv-2.dll`, `yt-dlp.exe`, `ffmpeg.exe` y `licenses\`.
-- [ ] Arranque correcto: ventana «Música», sin consola negra; WebView2
+- [ ] Arranque correcto: ventana «catPet», sin consola negra; WebView2
       presente.
 - [ ] Escaneo de una carpeta con mp3/m4a/webm: entran con etiquetas y duración;
       la búsqueda responde.

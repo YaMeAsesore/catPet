@@ -360,7 +360,7 @@
         <div class="ob-row">
           <Btn onclick={onCheckYt} title="Vuelve a comprobar yt-dlp y su runtime">Comprobar yt-dlp</Btn>
         </div>
-        <span class="hint">El registro de errores de la app se guarda en musica.log dentro de su carpeta de datos.</span>
+        <span class="hint">El registro de errores de la app se guarda en catPet.log dentro de su carpeta de datos.</span>
       </section>
 
     </div>

@@ -127,7 +127,7 @@
 <aside class="sidebar" class:folded>
   <div class="sb-head">
     <span class="sb-logo"><BrandMark size={folded ? 20 : 24} title="" /></span>
-    <span class="sb-title txt">Música</span>
+    <span class="sb-title txt">catPet</span>
     <button class="icon small sb-fold" onclick={() => (folded = !folded)}
       title={folded ? "Desplegar barra lateral" : "Plegar barra lateral"} aria-expanded={!folded}>
       <Icon name={folded ? "chevR" : "chevL"} size={15} />

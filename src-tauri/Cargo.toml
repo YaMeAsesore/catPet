@@ -1,5 +1,5 @@
 [package]
-name = "musica"
+name = "catpet"
 version = "0.1.0"
 description = "Reproductor de escritorio rápido, sin anuncios: archivos locales + MPRIS/SMTC"
 edition = "2021"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "musica",
+  "productName": "catPet",
   "version": "0.1.0",
   "identifier": "com.musica.app",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Música",
+        "title": "catPet",
         "width": 1200,
         "height": 800,
         "minWidth": 900,

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Lanzador de Música (Tauri + Svelte + Rust).
+# Lanzador de catPet (Tauri + Svelte + Rust).
 # Decide: un .sh evita recordar las variables de node/GPU de este equipo.
 #
 # Uso:
-#   ./musica.sh            → desarrollo (vite + tauri dev, recarga en caliente)
-#   ./musica.sh build      → binario release + bundles (.deb/.AppImage)
-#   ./musica.sh run        → ejecuta el binario debug ya compilado (usa dist/)
-#   ./musica.sh soft       → fuerza render por software (ventana negra/GBM)
-#   ./musica.sh check      → verifica toolchain sin arrancar la app
+#   ./catPet-dev.sh            → desarrollo (vite + tauri dev, recarga en caliente)
+#   ./catPet-dev.sh build      → binario release + bundles (.deb/.AppImage)
+#   ./catPet-dev.sh run        → ejecuta el binario debug ya compilado (usa dist/)
+#   ./catPet-dev.sh soft       → fuerza render por software (ventana negra/GBM)
+#   ./catPet-dev.sh check      → verifica toolchain sin arrancar la app
 #
 #   MUSICA_NO_AUTO_INSTALL=1 → no instala node_modules (mensaje antiguo y sale)
 #
@@ -21,7 +21,7 @@
 set -uo pipefail
 
 # ---- Log persistente: si el terminal se cierra, aquí queda el rastro ----
-LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/musica"
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/catPet"
 mkdir -p "$LOG_DIR" 2>/dev/null || LOG_DIR="/tmp"
 LOG="$LOG_DIR/launcher.log"
 exec > >(tee -a "$LOG") 2>&1
@@ -60,9 +60,9 @@ if [ "$(id -u)" = "0" ]; then
   if [ -n "${SUDO_USER:-}" ]; then
     die "NO uses sudo: rustup/cargo se configuran por usuario ('$SUDO_USER'),
        y como root no hay toolchain por defecto. Ejecuta:
-       $PROJECT_DIR/musica.sh $MODE"
+       $PROJECT_DIR/catPet-dev.sh $MODE"
   else
-    die "NO ejecutes como root: ejecuta ./musica.sh con tu usuario normal."
+    die "NO ejecutes como root: ejecuta ./catPet-dev.sh con tu usuario normal."
   fi
 fi
 
@@ -134,7 +134,7 @@ check_port() {
   if command -v ss >/dev/null 2>&1; then
     if ss -tln 2>/dev/null | grep -q ':1420 '; then
       die "el puerto 1420 está ocupado (¿vite viejo?). Libéralo:
-       pkill -f 'vite' && pkill -f 'target/debug/musica'"
+       pkill -f 'vite' && pkill -f 'target/debug/catpet'"
     fi
   fi
 }
@@ -160,16 +160,16 @@ case "$MODE" in
     log "compilando frontend + backend release…"
     npm run build || die "falló el build del frontend"
     ( cd src-tauri && cargo build --release ) || die "falló el build de Rust"
-    log "binario: src-tauri/target/release/musica"
+    log "binario: src-tauri/target/release/catpet"
     log "bundles .deb/.AppImage: npx tauri build"
     ;;
 
   run)
-    BIN="src-tauri/target/debug/musica"
-    [ -x "$BIN" ] || die "no existe $BIN: usa './musica.sh dev' o './musica.sh build'"
+    BIN="src-tauri/target/debug/catpet"
+    [ -x "$BIN" ] || die "no existe $BIN: usa './catPet-dev.sh dev' o './catPet-dev.sh build'"
     if [ ! -f dist/index.html ]; then
       warn "sin dist/index.html: el binario debug buscará el dev server de vite"
-      warn "→ usa './musica.sh dev' (recomendado en desarrollo)"
+      warn "→ usa './catPet-dev.sh dev' (recomendado en desarrollo)"
     fi
     log "ejecutando $BIN"
     exec "$BIN"

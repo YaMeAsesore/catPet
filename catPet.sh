@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Lanzador universal de la AppImage de Música.
+# Lanzador universal de la AppImage de catPet.
 #
 # - Fuerza XWayland por defecto: WebKitGTK no crea una ventana fiable en
 #   Wayland con esta app. Se puede sobrescribir con GDK_BACKEND=wayland.
 # - Si el sistema tiene FUSE 2, monta la AppImage directamente. Si no, usa el
 #   modo "extract-and-run" (no necesita FUSE ni instalar nada).
-# - `./Musica.sh soft` fuerza render por software para GPUs/WebKit problemáticos.
+# - `./catPet.sh soft` fuerza render por software para GPUs/WebKit problemáticos.
 set -euo pipefail
 
 MODE=""
@@ -24,16 +24,16 @@ if [ "$MODE" = "soft" ]; then
 fi
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP="$DIR/musica_0.1.0_amd64.AppImage"
-if [ ! -x "$APP" ] && [ -x "$DIR/release/musica_0.1.0_amd64.AppImage" ]; then
-  APP="$DIR/release/musica_0.1.0_amd64.AppImage"
+APP="$DIR/catPet_0.1.0_amd64.AppImage"
+if [ ! -x "$APP" ] && [ -x "$DIR/release/catPet_0.1.0_amd64.AppImage" ]; then
+  APP="$DIR/release/catPet_0.1.0_amd64.AppImage"
 fi
 
 if [ ! -x "$APP" ]; then
   echo "No se encontró la AppImage: $APP" >&2
   echo "Descárgala desde:" >&2
   echo "  https://github.com/YaMeAsesore/catPet/releases/latest" >&2
-  echo "y déjala junto a Musica.sh, o en la carpeta release/." >&2
+  echo "y déjala junto a catPet.sh, o en la carpeta release/." >&2
   exit 1
 fi
 
@@ -49,7 +49,7 @@ if [ "$tiene_fuse" = "1" ]; then
 else
   # Extraer en el disco del usuario (no en /tmp, que puede ser tmpfs pequeño).
   if [ -z "${TMPDIR:-}" ]; then
-    TMPDIR="${XDG_CACHE_HOME:-$HOME/.cache}/musica-appimage"
+    TMPDIR="${XDG_CACHE_HOME:-$HOME/.cache}/catPet-appimage"
     mkdir -p "$TMPDIR"
     export TMPDIR
   fi

@@ -184,7 +184,7 @@ tests (`backend_resuelto_por_plataforma`) y features condicionadas por target en
 ```bash
 # 1) obtener token PKCE (flujo OAuth del portal de desarrollo de Spotify)
 # 2) pegar en el panel Spotify de la app → verifica Premium → conecta
-# 3) desde el móvil/escritorio oficial: elegir dispositivo "Música" →
+# 3) desde el móvil/escritorio oficial: elegir dispositivo "catPet" →
 #    transferir reproducción → los eventos playback://* deben actualizar UI y MPRIS
 # 4) teclas multimedia (play/pause/next) deben controlar el motor activo
 ```

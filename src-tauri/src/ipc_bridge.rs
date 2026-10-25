@@ -849,7 +849,7 @@ pub fn report_error(app: AppHandle, message: String) {
     std::fs::OpenOptions::new()
         .create(true)
         .append(true)
-        .open(dir.join("musica.log"))
+        .open(dir.join("catPet.log"))
         .and_then(|mut f| f.write_all(line.as_bytes()))
         .ok();
 }

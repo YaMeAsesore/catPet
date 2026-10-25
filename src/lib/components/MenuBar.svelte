@@ -174,10 +174,10 @@
 
 <div class="mb">
   <!-- Marca de la app: abre la biblioteca (misma acción que Fuente › Biblioteca). -->
-  <button type="button" class="mb-brand" title="Música — Biblioteca" aria-label="Música — ir a la biblioteca"
+  <button type="button" class="mb-brand" title="catPet — Biblioteca" aria-label="catPet — ir a la biblioteca"
     onclick={() => onHome?.()}>
     <BrandMark size={22} title="" />
-    <span class="mb-brand-name">Música</span>
+    <span class="mb-brand-name">catPet</span>
   </button>
 
   <div class="mb-menus" role="menubar" aria-label="Menú principal" bind:this={barEl} onfocusout={onFocusOut}>

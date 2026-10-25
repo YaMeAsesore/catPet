@@ -192,7 +192,7 @@ La detección es una expresión derivada de presentación; no cambia funciones.
 
 ### 2.2 Qué define cada contexto
 
-**Música local** (`musica`)
+**catPet local** (`musica`)
 - Cabecera: nombre + recuento (Biblioteca: `N / M canciones`; playlist:
   `N pistas`). Sin acciones nuevas.
 - Filas: locales normales (`▶`, `+`, `⋯`, `×`).
@@ -242,20 +242,20 @@ ella y la lista:
                                       subtítulo
 ```
 
-**1) Música local — biblioteca / playlist local**
+**1) catPet local — biblioteca / playlist local**
 
 ```text
-┌ Contexto «Música local» ─────────────────────────────────────────────────────┐
+┌ Contexto «catPet local» ─────────────────────────────────────────────────────┐
 │ ♪  Biblioteca                                         123 / 456 canciones    │
 └──────────────────────────────────────────────────────────────────────────────┘
   ▶ filas locales  [▶] [+] [⋯]        (sin ytbar, sin puntos de estado, sin
   ▶ filas locales  [▶] [+] [⋯]         descargas, sin «Cargar más»)
 ```
 
-**1b) Música local — subcaso CSV (playlist con pistas `ytmusic://`, pregunta ②)**
+**1b) catPet local — subcaso CSV (playlist con pistas `ytmusic://`, pregunta ②)**
 
 ```text
-┌ Contexto «Música local» ─────────────────────────────────────────────────────┐
+┌ Contexto «catPet local» ─────────────────────────────────────────────────────┐
 │ ♪  Mi lista del CSV                        42 pistas · 6 sin match           │
 │ [Emparejar todas]   [⬇ Descargar playlist]                                   │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -342,7 +342,7 @@ ya existentes (`playYtAll`, `saveYtAsSource`, `askDownloadPlaylist`,
 
 - **V1** — Armazón: detección + 5 cabeceras vacías + interruptor. Apagado =
   idéntico a hoy. Gates + P6. **✔** (commit `aa34780`).
-- **V2** — Contexto Música local completo. **✔** (ver §8).
+- **V2** — Contexto catPet local completo. **✔** (ver §8).
 - **V3** — Contexto YouTube Music completo. *Prueba manual del usuario antes de
   V4* (protocolo acordado).
 - **V4** — Radios, Servidores y Spotify (ligeros).
@@ -372,7 +372,7 @@ Gates por fase: `cargo check` 0/0, `cargo test` sin fallos, `npm run build`
 1. **Base**: `master` no tiene el merge de v0.6. La rama `feat/ui-contextos`
    cuelga de `eccc594` (v0.6), contenido idéntico a «master + merge». ¿Te vale
    así (tú haces el merge cuando quieras) o prefieres fusionar master antes?
-2. **Subcaso CSV**: ¿conservamos en «Música local» los controles actuales de
+2. **Subcaso CSV**: ¿conservamos en «catPet local» los controles actuales de
    las playlists con pistas `ytmusic://` (`Emparejar todas`, `⬇ Descargar
    playlist`, `🔀`, `⬇` y punto por fila)? Recomendado: sí («TODAS las
    funciones»).
@@ -465,7 +465,7 @@ Umbrales: texto ≥ 4.5:1; componentes (matiz, acento) ≥ 3:1.
   ecualizador sencillo (V2); puntos de estado de YouTube con leyenda (V3);
   reproductor como tarjeta con progreso más grueso al enfocar (V5).
 
-## 8. V2: contexto «Música local» (filas y subcaso CSV)
+## 8. V2: contexto «catPet local» (filas y subcaso CSV)
 
 ### 8.1 Qué se re-hogariza (mover, no copiar)
 

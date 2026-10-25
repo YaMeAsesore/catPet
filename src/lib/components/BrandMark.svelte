@@ -1,4 +1,4 @@
-<!-- Marca de Música: vinilo + play (imágenes 1 y 2).
+<!-- Marca de catPet: vinilo + play (imágenes 1 y 2).
      Se incrusta en línea para heredar el color del tema (tinta/papel). A tamaño
      pequeño usa una reducción de 3 aros con trazo grueso; a partir de 40 px, el
      vinilo completo. -->
@@ -9,7 +9,7 @@
   let {
     size = 24,
     strokeWidth = 0,
-    title = "Música",
+    title = "catPet",
   }: { size?: number; strokeWidth?: number; title?: string } = $props();
 
   // A tamaño pequeño el trazo original (13/512) desaparece y las ondas se
