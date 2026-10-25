@@ -25,10 +25,15 @@ fi
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP="$DIR/musica_0.1.0_amd64.AppImage"
+if [ ! -x "$APP" ] && [ -x "$DIR/release/musica_0.1.0_amd64.AppImage" ]; then
+  APP="$DIR/release/musica_0.1.0_amd64.AppImage"
+fi
 
 if [ ! -x "$APP" ]; then
   echo "No se encontró la AppImage: $APP" >&2
-  echo "Deja Musica.sh y musica_0.1.0_amd64.AppImage en la misma carpeta." >&2
+  echo "Descárgala desde:" >&2
+  echo "  https://github.com/YaMeAsesore/catPet/releases/latest" >&2
+  echo "y déjala junto a Musica.sh, o en la carpeta release/." >&2
   exit 1
 fi
 

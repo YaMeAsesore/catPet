@@ -32,6 +32,18 @@ Hecho con **Tauri 2 + Rust + Svelte 5 + libmpv**. Sin Electron y sin tracking.
   «+ Añadir», atajos de teclado y soporte de `prefers-reduced-motion`.
 - **Sin anuncios ni telemetría.**
 
+## Capturas
+
+Interfaz «Mac 1-bit», con tema oscuro y claro.
+
+| Reproductor (oscuro) | Reproductor (claro) |
+| :---: | :---: |
+| <img src="docs/imagenes/reproductor-oscuro.png" alt="Reproductor en tema oscuro" /> | <img src="docs/imagenes/reproductor-claro.png" alt="Reproductor en tema claro" /> |
+| **Portada ampliada (oscuro)** | **Biblioteca (claro)** |
+| <img src="docs/imagenes/reproductor-oscuro-2.png" alt="Portada ampliada en tema oscuro" /> | <img src="docs/imagenes/biblioteca-clara.png" alt="Biblioteca en tema claro" /> |
+
+<img src="docs/imagenes/descargas.png" alt="Panel de descargas" />
+
 ## Requisitos
 
 - **Rust** ≥ 1.77 y **Node.js** ≥ 20.
