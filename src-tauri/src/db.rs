@@ -275,6 +275,36 @@ pub fn get_source(conn: &Connection, id: i64) -> rusqlite::Result<Option<Source>
     Ok(rows.next().transpose()?)
 }
 
+
+/// Busca una fuente por tipo y URL exacta (para no duplicar radios resueltas).
+pub fn find_source_by_url(
+    conn: &Connection,
+    kind: &str,
+    base_url: &str,
+) -> rusqlite::Result<Option<Source>> {
+    let mut st = conn.prepare(
+        "SELECT id,kind,name,base_url,user,secret,extra FROM sources
+         WHERE kind=?1 AND base_url=?2 LIMIT 1",
+    )?;
+    let mut rows = st.query_map(params![kind, base_url], row_to_source)?;
+    Ok(rows.next().transpose()?)
+}
+
+
+/// Actualiza una radio ya resuelta (nombre, stream final y carátula/ciudad).
+pub fn update_source_radio(
+    conn: &Connection,
+    id: i64,
+    name: &str,
+    base_url: &str,
+    extra: &str,
+) -> rusqlite::Result<usize> {
+    conn.execute(
+        "UPDATE sources SET name=?1, base_url=?2, extra=?3 WHERE id=?4 AND kind='radio'",
+        params![name, base_url, extra, id],
+    )
+}
+
 pub fn remove_source(conn: &Connection, id: i64) -> rusqlite::Result<usize> {
     Ok(conn.execute("DELETE FROM sources WHERE id=?1", [id])?)
 }

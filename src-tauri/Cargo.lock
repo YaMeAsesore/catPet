@@ -3475,7 +3475,9 @@ name = "musica"
 version = "0.1.0"
 dependencies = [
  "apple-native-keyring-store",
+ "base64 0.22.1",
  "csv",
+ "flate2",
  "keyring-core",
  "libmpv2",
  "librespot",

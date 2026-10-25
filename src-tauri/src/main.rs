@@ -423,9 +423,14 @@ async fn source_add(
     secret: String,
 ) -> Result<db::Source, String> {
     let kind = kind.to_lowercase();
-    if name.trim().is_empty() || base_url.trim().is_empty() {
-        return Err("nombre y URL son obligatorios".into());
+    if base_url.trim().is_empty() {
+        return Err("la URL es obligatoria".into());
     }
+    if kind != "radio" && name.trim().is_empty() {
+        return Err("el nombre es obligatorio".into());
+    }
+    let mut final_name = name.trim().to_string();
+    let mut final_url = base_url.trim().to_string();
     let (user, secret, extra) = match kind.as_str() {
         "subsonic" => {
             // `secret` es la contraseña: se valida y se descarta (queda salt+token).
@@ -437,10 +442,18 @@ async fn source_add(
             (api.user_id, api.token, String::new())
         }
         "radio" => {
-            if !base_url.starts_with("http://") && !base_url.starts_with("https://") {
-                return Err("la radio debe ser una URL http(s)".into());
-            }
-            (String::new(), String::new(), String::new())
+            // Acepta un stream directo o un enlace de emisora de Radio Garden
+            // (se resuelve al stream real). El nombre es opcional.
+            let r = remote::resolve_radio(&final_url, &final_name).await?;
+            final_name = r.name;
+            final_url = r.url;
+            let extra = serde_json::json!({
+                "artwork": r.art_url,
+                "place": r.place,
+                "resolved": true,
+            })
+            .to_string();
+            (String::new(), String::new(), extra)
         }
         "podcast" => {
             // Valida que el feed descargue y parsee antes de guardar.
@@ -456,9 +469,17 @@ async fn source_add(
         _ => return Err("tipo de fuente desconocido".into()),
     };
     let conn = db::open(&state.db_path).map_err(|e| e.to_string())?;
+    // Radio: la misma emisora resuelta no se guarda dos veces.
+    if kind == "radio" {
+        if let Some(existing) =
+            db::find_source_by_url(&conn, "radio", &final_url).map_err(|e| e.to_string())?
+        {
+            return Ok(existing);
+        }
+    }
     let src = db::add_source(
         &conn,
-        &db::Source { id: 0, kind, name: name.trim().to_string(), base_url: base_url.trim().to_string(), user, secret, extra },
+        &db::Source { id: 0, kind, name: final_name, base_url: final_url, user, secret, extra },
     )
     .map_err(|e| e.to_string())?;
     reload_registry(&state)?;
@@ -534,19 +555,46 @@ async fn remote_search(
                 eps.into_iter().filter(|t| t.title.to_lowercase().contains(&q)).collect()
             })
         }
-        "radio" => Ok(vec![db::Track {
-            id: 0,
-            path: src.base_url.clone(),
-            title: src.name.clone(),
-            artist: "Radio".into(),
-            album: "Directo".into(),
-            genre: "radio".into(),
-            year: 0,
-            track_no: 0,
-            duration_secs: 0, // directo: duración desconocida
-            mtime: 0,
-            art_url: String::new(),
-        }]),
+        "radio" => {
+            // `extra` guarda carátula, ciudad y si la URL ya es el stream final.
+            let meta: serde_json::Value =
+                serde_json::from_str(&src.extra).unwrap_or(serde_json::Value::Null);
+            let already = meta.get("resolved").and_then(|v| v.as_bool()).unwrap_or(false);
+            let (url, title, art_url, place) = if already {
+                (
+                    src.base_url.clone(),
+                    src.name.clone(),
+                    meta.get("artwork").and_then(|v| v.as_str()).unwrap_or("").to_string(),
+                    meta.get("place").and_then(|v| v.as_str()).unwrap_or("").to_string(),
+                )
+            } else {
+                // Radios guardadas antes del resolver: la URL puede ser una
+                // página (p. ej. radio.garden). Se resuelve ahora y se guarda.
+                let r = remote::resolve_radio(&src.base_url, &src.name).await?;
+                let extra = serde_json::json!({
+                    "artwork": r.art_url,
+                    "place": r.place,
+                    "resolved": true,
+                })
+                .to_string();
+                db::update_source_radio(&conn, src.id, &r.name, &r.url, &extra)
+                    .map_err(|e| e.to_string())?;
+                (r.url, r.name, r.art_url, r.place)
+            };
+            Ok(vec![db::Track {
+                id: 0,
+                path: url,
+                title,
+                artist: "Radio".into(),
+                album: if place.is_empty() { "Directo".into() } else { place },
+                genre: "radio".into(),
+                year: 0,
+                track_no: 0,
+                duration_secs: 0, // directo: duración desconocida
+                mtime: 0,
+                art_url,
+            }])
+        }
         "youtube" => {
             // G1: antes estaba topado a 100 ("--playlist-end 100"), así que
             // una playlist de 114 solo mostraba 100 filas y sin posibilidad

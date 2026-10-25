@@ -23,8 +23,8 @@ Hecho con **Tauri 2 + Rust + Svelte 5 + libmpv**. Sin Electron y sin tracking.
   multimedia y control desde el sistema.
 - **YouTube Music**: inicio de sesión, playlists, «Me gusta», recomendaciones,
   importación por lotes y descargas con `yt-dlp`.
-- **Otros proveedores**: radios por URL, podcasts por RSS, Subsonic/Navidrome y
-  Jellyfin.
+- **Otros proveedores**: radios por URL o enlace de emisora de Radio Garden,
+  podcasts por RSS, Subsonic/Navidrome y Jellyfin.
 - **Spotify Connect** (cuenta Premium): motor nativo con `librespot`.
 - **Descargas**: audio original, MP3 o M4A; etiquetas y portada opcionales;
   reanudación y reintentos.
@@ -123,6 +123,24 @@ Consejos:
   en `~/.local/share/com.musica.app/bin/yt-dlp` (Linux) o
   `%APPDATA%\com.musica.app\bin\yt-dlp.exe` (Windows).
 
+## Radios y podcasts
+
+- **Radio directa**: pega un stream de audio (`.mp3`, `.aac`, `.ogg`, `.m3u8`)
+  o una URL `http(s)` que devuelva audio. El nombre es opcional; si lo dejas
+  vacío se usa el nombre del host.
+- **Radio Garden**: pega el enlace de una emisora
+  (`https://radio.garden/listen/<emisora>/<id>`). La app consulta su endpoint
+  interno, resuelve la emisora y guarda el stream final. También guarda la
+  ciudad y la carátula de la emisora.
+- **Streema / LiveOnlineRadio**: pega la página de la emisora; la app extrae
+  el stream del reproductor cuando la página lo expone (incluye el caso
+  Shoutcast `host:puerto/;`). No todas las webs son compatibles: si no
+  encuentra el stream, muestra un aviso y puedes usar el enlace directo.
+- **Podcast**: pega el feed RSS.
+- Radio Garden no tiene una API oficial; si su endpoint cambia o bloquea la
+  petición, usa el enlace directo del stream. La página
+  `radio.garden/settings` no es una emisora y se rechaza con un aviso claro.
+
 ## Estructura
 
 ```text
@@ -159,7 +177,7 @@ musica/
 ## Estado
 
 - `svelte-check`: 0 errores, 0 warnings.
-- `cargo test --release`: 169 pruebas superadas, 18 ignoradas (red/audio real).
+- `cargo test --release`: 173 pruebas superadas, 21 ignoradas (red/audio real).
 - Linux: probado en Arch/CachyOS y en Ubuntu 22.04 (AppImage en modo
   extract-and-run).
 - Windows: el flujo de CI y el instalador existen, pero falta la prueba en

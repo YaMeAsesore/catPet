@@ -170,7 +170,7 @@
         <select bind:value={fKind} title="Tipo">
           <option value="subsonic">Subsonic/Navidrome</option>
           <option value="jellyfin">Jellyfin</option>
-          <option value="radio">Radio (URL directa)</option>
+          <option value="radio">Radio (stream o Radio Garden)</option>
           <option value="podcast">Podcast (RSS)</option>
           <option value="youtube">YouTube Music</option>
         </select>
@@ -189,14 +189,18 @@
           {/if}
           <span class="hint">La sesión de YouTube se gestiona en Ajustes (engranaje de la cabecera).</span>
         {:else}
-          <input placeholder="Nombre" bind:value={fName} />
-          <input placeholder="URL base o feed" bind:value={fUrl} />
+          <input placeholder={fKind === "radio" ? "Nombre (opcional)" : "Nombre"} bind:value={fName} />
+          <input placeholder={fKind === "radio" ? "URL del stream o de Radio Garden" : "URL base o feed"} bind:value={fUrl} />
+          {#if fKind === "radio"}
+            <span class="hint">Acepta un stream directo (.mp3, .aac, .ogg, .m3u8), una emisora de radio.garden (<code>/listen/...</code>) o páginas compatibles como Streema y LiveOnlineRadio. El nombre es opcional.</span>
+          {/if}
           {#if fKind === "subsonic" || fKind === "jellyfin"}
             <input placeholder="Usuario" bind:value={fUser} />
             <input type="password" placeholder="Contraseña (no se guarda)" bind:value={fSecret} />
           {/if}
           <div class="ob-row">
-            <Btn primary onclick={onSave}>Probar y guardar</Btn>
+            <Btn primary onclick={onSave}
+              disabled={fUrl.trim().length === 0 || (fKind !== "radio" && fName.trim().length === 0)}>Probar y guardar</Btn>
           </div>
         {/if}
         <div class="ob-acts">
