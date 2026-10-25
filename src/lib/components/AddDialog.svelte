@@ -183,7 +183,7 @@
             <Btn onclick={onSaveYtSource} disabled={!ytImportReady} title="Guardar la importación actual como fuente">Guardar como fuente</Btn>
           </div>
           {#if ytProbeOk === false && !ytProbeInfo}
-            <span class="hint">yt-dlp no instalado: <b>sudo pacman -S yt-dlp</b> (solo streaming, no descarga nada)</span>
+            <span class="hint">No se encontró yt-dlp. En la AppImage debería venir incluido; si usas el código fuente, instálalo en el sistema.</span>
           {:else if ytProbeInfo}
             <span class="hint">{ytProbeInfo}</span>
           {/if}

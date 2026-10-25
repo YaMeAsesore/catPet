@@ -48,9 +48,13 @@ pub fn find_tool(name: &str) -> PathBuf {
                 }
             }
             // Linux: recursos en /usr/lib/<producto>/bin (deb y AppImage).
+            // Se acepta catPet (nombre actual), catpet (variante) y musica
+            // (paquetes anteriores) para no romper instalaciones existentes.
             #[cfg(not(windows))]
-            if let Some(p) = find_in_dir(&dir.join("../lib/musica/bin"), name) {
-                return p;
+            for rel in ["../lib/catPet/bin", "../lib/catpet/bin", "../lib/musica/bin"] {
+                if let Some(p) = find_in_dir(&dir.join(rel), name) {
+                    return p;
+                }
             }
         }
     }
@@ -113,6 +117,8 @@ fn is_included_path(tool: &Path, exe: &Path) -> bool {
         dir.join("bin"),
         dir.join("resources"),
         dir.join("resources").join("bin"),
+        dir.join("../lib/catPet/bin"),
+        dir.join("../lib/catpet/bin"),
         dir.join("../lib/musica/bin"),
     ];
     bases.iter().any(|b| tool.starts_with(b))
