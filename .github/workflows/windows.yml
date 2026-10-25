@@ -1,0 +1,213 @@
+# W6 — Build de Windows (instalador NSIS).
+#
+# Disparadores: SOLO manual (workflow_dispatch) y tags v*. Sin secretos, sin firma.
+# Fuentes: releases de TAG FIJO con sha256 fijado en este fichero (si un hash no
+#   coincide, el job se detiene en el paso de descarga):
+#     - libmpv LGPL + ffmpeg LGPL: zhongfly/mpv-winbuild tag 2026-10-14-7c4f662c08
+#       (misma fecha/tag para ambos; el mpv es el commit 7c4f662c0, igual que el
+#       del release "development build" de mpv-player/mpv verificado en W5)
+#     - yt-dlp.exe: yt-dlp/yt-dlp tag 2026.08.19 (release estable)
+#   Nota: ni mpv-player ni BtbN ofrecen estas variantes con tag fijo (ver P6 de W6).
+# Orden: check temprano → descargas sha256 → mpv.lib → npm ci → tauri build →
+#   verificación de salida → artifact.
+
+name: Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Entorno MSVC (cl, rc, lib, dumpbin) para cargo y para generar mpv.lib.
+      - name: Entorno MSVC
+        uses: ilammy/msvc-dev-cmd@7defe9254715b088f12dddd9942945a3d75cdad5 # v1.9.0
+
+      # RUSTFLAGS SOLO en este job (GITHUB_ENV afecta a los pasos siguientes de
+      # este job; nada a nivel de workflow). El repo NO tiene .cargo/config.toml:
+      # no hay rustflags que se pisen. Si algún día se añade, hay que concatenarlas.
+      - name: RUSTFLAGS (-L native para mpv.lib)
+        run: |
+          "RUSTFLAGS=-L native=$env:RUNNER_TEMP\mpv-lib" |
+            Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Node 22 y caché npm
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Caché de Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Rust estable y target x86_64-pc-windows-msvc
+        run: |
+          rustup default stable
+          rustup target add x86_64-pc-windows-msvc
+          rustc --version
+
+      # 1) check TEMPRANO: falla rápido en errores de compilación en Windows
+      #    (ring, libsqlite3, windows-sys, cfg(windows) de W2/W3) ANTES de
+      #    descargar nada. tauri-build copia resources/externalBin en build.rs,
+      #    así que se crean marcadores vacíos; el paso de descarga los sustituye
+      #    (con comprobación de tamaño después, para que no se cuele uno vacío).
+      - name: cargo check --target x86_64-pc-windows-msvc
+        run: |
+          foreach ($f in @(
+            "src-tauri\binaries\yt-dlp-x86_64-pc-windows-msvc.exe",
+            "src-tauri\binaries\ffmpeg-x86_64-pc-windows-msvc.exe",
+            "src-tauri\resources\libmpv-2.dll")) {
+            $d = Split-Path $f
+            New-Item -ItemType Directory -Force $d | Out-Null
+            if (-not (Test-Path $f)) { New-Item -ItemType File -Path $f | Out-Null }
+          }
+          cargo check --manifest-path src-tauri/Cargo.toml --target x86_64-pc-windows-msvc
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      # 2) Descargas de TAG FIJO con sha256 fijado. Cualquier discrepancia detiene
+      #    el job aquí (esperado vs. obtenido se imprimen en el log).
+      - name: Descargas verificadas (sha256)
+        run: |
+          $ErrorActionPreference = "Stop"
+          $assets = @(
+            @{ url = "https://github.com/zhongfly/mpv-winbuild/releases/download/2026-10-14-7c4f662c08/mpv-dev-lgpl-x86_64-20261014-git-7c4f662c08.7z"
+               out = "mpv-dev.7z"
+               sha = "37fd9c57c2c050e23162c08b6fe3eea0555a6b6e0b2d08470555834aea0a18d3" },
+            @{ url = "https://github.com/zhongfly/mpv-winbuild/releases/download/2026-10-14-7c4f662c08/ffmpeg-lgpl-x86_64-git-21441b340.7z"
+               out = "ffmpeg.7z"
+               sha = "13939d7166e1335792338a88666061326f552ed786e44f57e6bfaddd33a517c7" },
+            @{ url = "https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp.exe"
+               out = "yt-dlp.exe"
+               sha = "66674953fe251b89f4d08c5f0e35e0728679bd67ab3d7d05c0562af101dd3e7a" }
+          )
+          foreach ($a in $assets) {
+            Write-Output "Descargando $($a.out)..."
+            Invoke-WebRequest -Uri $a.url -OutFile $a.out
+            $h = (Get-FileHash -Algorithm SHA256 $a.out).Hash.ToLower()
+            if ($h -ne $a.sha) {
+              Write-Output "SHA256 NO coincide en $($a.out):"
+              Write-Output "  esperado: $($a.sha)"
+              Write-Output "  obtenido: $h"
+              exit 1
+            }
+            Write-Output "SHA256 OK $($a.out)"
+          }
+
+      # 3) Colocar los binarios donde tauri-build/bundler los esperan (mismos
+      #    nombres que en tauri.windows.conf.json) y descartar placeholders.
+      - name: Extraer y colocar binarios (7z)
+        run: |
+          $sevenZip = if (Get-Command 7z -ErrorAction SilentlyContinue) { "7z" }
+                      else { "C:\Program Files\7-Zip\7z.exe" }
+          & $sevenZip e -y "-osrc-tauri\resources" mpv-dev.7z libmpv-2.dll
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & $sevenZip e -y "-o$env:RUNNER_TEMP\ff" ffmpeg.7z ffmpeg.exe
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Move-Item -Force "$env:RUNNER_TEMP\ff\ffmpeg.exe" `
+            "src-tauri\binaries\ffmpeg-x86_64-pc-windows-msvc.exe"
+          Move-Item -Force "yt-dlp.exe" `
+            "src-tauri\binaries\yt-dlp-x86_64-pc-windows-msvc.exe"
+          $min = @{
+            "src-tauri\resources\libmpv-2.dll" = 50MB
+            "src-tauri\binaries\ffmpeg-x86_64-pc-windows-msvc.exe" = 50MB
+            "src-tauri\binaries\yt-dlp-x86_64-pc-windows-msvc.exe" = 10MB
+          }
+          foreach ($k in $min.Keys) {
+            $len = (Get-Item $k).Length
+            if ($len -lt $min[$k]) {
+              Write-Output "$k demasiado pequeño ($len bytes): ¿placeholder sin sustituir?"
+              exit 1
+            }
+            Write-Output "OK $k ($len bytes)"
+          }
+
+      # 4) mpv.lib para MSVC: se genera desde los exports REALES de la DLL
+      #    descargada (dumpbin → .def → lib /def). RUSTFLAGS (-L native) ya
+      #    apunta a esta carpeta.
+      - name: mpv.lib desde los exports reales (lib /def)
+        run: |
+          $libDir = "$env:RUNNER_TEMP\mpv-lib"
+          New-Item -ItemType Directory -Force $libDir | Out-Null
+          $exp = "$env:RUNNER_TEMP\exports.txt"
+          dumpbin /exports "src-tauri\resources\libmpv-2.dll" > $exp
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $names = @(foreach ($line in Get-Content $exp) {
+            if ($line -match '^\s+\d+\s+[0-9A-Fa-f]+\s+[0-9A-Fa-f]+\s+(\S+)\s*$') {
+              $Matches[1]
+            }
+          })
+          if ($names.Count -lt 40) {
+            Write-Output "Solo se parsearon $($names.Count) exports (se esperaban >= 40)"
+            exit 1
+          }
+          $def = "$env:RUNNER_TEMP\mpv-2.def"
+          $lines = @("LIBRARY libmpv-2.dll", "EXPORTS") + $names
+          Set-Content -Path $def -Value $lines -Encoding ascii
+          lib /def:"$def" /machine:x64 /out:"$libDir\mpv.lib"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          if (-not (Test-Path "$libDir\mpv.lib")) { exit 1 }
+          Write-Output "mpv.lib generado con $($names.Count) exports"
+
+      - name: npm ci
+        run: npm ci
+
+      # 5) Build de release + empaquetado NSIS (lee tauri.windows.conf.json:
+      #    sidecars externalBin, libmpv-2.dll como resource, licencias, WebView2).
+      - name: tauri build (NSIS)
+        run: npm run tauri -- build
+
+      # 6) Verificación de la salida: los tres binarios en target/release y
+      #    dentro del instalador generado.
+      - name: Verificar salida
+        run: |
+          $fail = $false
+          foreach ($f in "libmpv-2.dll", "yt-dlp.exe", "ffmpeg.exe") {
+            $p = "src-tauri\target\release\$f"
+            if (Test-Path $p) { Write-Output "OK target\release\$f" }
+            else { Write-Output "FALTA target\release\$f"; $fail = $true }
+          }
+          $installer = Get-ChildItem "src-tauri\target\release\bundle\nsis" -Filter *.exe -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+          if (-not $installer) {
+            Write-Output "FALTA el instalador NSIS (bundle\nsis\*.exe)"
+            exit 1
+          }
+          Write-Output "Instalador: $($installer.FullName)"
+          $sevenZip = if (Get-Command 7z -ErrorAction SilentlyContinue) { "7z" }
+                      else { "C:\Program Files\7-Zip\7z.exe" }
+          $list = & $sevenZip l $installer.FullName | Out-String
+          if ($LASTEXITCODE -ne 0) { Write-Output "7z no pudo listar el instalador"; exit 1 }
+          foreach ($f in "libmpv-2.dll", "yt-dlp.exe", "ffmpeg.exe") {
+            if ($list -match [regex]::Escape($f)) { Write-Output "OK instalador contiene $f" }
+            else { Write-Output "FALTA en el instalador: $f"; $fail = $true }
+          }
+          if ($fail) { exit 1 }
+
+      - name: Subir instalador (artifact)
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: musica-windows-nsis
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error

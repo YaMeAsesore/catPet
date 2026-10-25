@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permisos mínimos del MVP: ventana + diálogo abrir carpeta.",
+  "windows": ["main"],
+  "permissions": ["core:default", "dialog:allow-open", "fs:allow-read-file"]
+}

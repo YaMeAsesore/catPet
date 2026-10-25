@@ -1,0 +1,59 @@
+[package]
+name = "musica"
+version = "0.1.0"
+description = "Reproductor de escritorio rápido, sin anuncios: archivos locales + MPRIS/SMTC"
+edition = "2021"
+rust-version = "1.77"
+license = "MIT"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+walkdir = "2"
+# Decisión (S2): crate `csv` (Unlicense/MIT) para importar listas de Spotify
+# Free exportadas por el usuario; parser local, sin red.
+csv = "1.4"
+lofty = { version = "0.22" }
+notify = "6"
+libmpv2 = "6"
+souvlaki = "0.8"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+md5 = "0.7"
+sha1 = "0.10"
+rss = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+keyring-core = "1.0"
+
+# Decisión: librespot solo se compila para el backend nativo de cada plataforma
+# (alsa/pulse en Linux, rodio→WASAPI en Windows / CoreAudio en macOS).
+# `rustls-tls-native-roots` evita openssl-sys (coherente con reqwest rustls del proyecto).
+[target.'cfg(target_os = "linux")'.dependencies]
+librespot = { version = "0.8", default-features = false, features = ["alsa-backend", "pulseaudio-backend", "rustls-tls-native-roots", "with-libmdns"] }
+zbus-secret-service-keyring-store = { version = "1", features = ["crypto-rust"] }
+linux-keyutils-keyring-store = "1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+librespot = { version = "0.8", default-features = false, features = ["rodio-backend", "rustls-tls-native-roots", "with-libmdns"] }
+apple-native-keyring-store = "1"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+librespot = { version = "0.8", default-features = false, features = ["rodio-backend", "rustls-tls-native-roots", "with-libmdns"] }
+windows-native-keyring-store = "1"
+# W2: GetProcessMemoryInfo para el muestreo [res] (en Linux es /proc/self/status).
+windows-sys = { version = "0.61", features = ["Win32_System_ProcessStatus", "Win32_System_Threading"] }
+
+# Pin de viabilidad: vergen 9.1.0 depende de vergen-lib 9.x, pero vergen-gitcl 1.0.8
+# (build-dep de librespot-core 0.8.0) implementa sus traits sobre vergen-lib 0.1 →
+# sin este pin, el build.rs de librespot-core no compila. Verificado en probe.
+vergen = "=9.0.6"
+
+# Decisión: libmpv da gapless/EQ/ReplayGain en una API porque evita plugins del sistema.
+# Decisión: souvlaki abstrae MPRIS+SMTC porque evita duplicar D-Bus/WinRT.
+# Decisión: rusqlite bundled+FTS5 porque búsqueda <20ms sin servidor y compila en Win/Linux.

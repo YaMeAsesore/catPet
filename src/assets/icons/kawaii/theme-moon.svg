@@ -1,0 +1,6 @@
+<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M36 8 A18 18 0 1 0 36 40 A14.5 14.5 0 1 1 36 8 Z"/>
+  <path d="M22.5 24.5 Q24.5 26 26.5 24.5 M31 22.5 Q33 24 35 22.5" stroke-width="3"/>
+  <circle cx="28.5" cy="29" r="1.6"/>
+  <path d="M38 6l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" style="fill:var(--accent)" stroke="none"/>
+</svg>

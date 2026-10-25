@@ -1,0 +1,9 @@
+<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+  <circle cx="9" cy="24" r="3.4" fill="currentColor" stroke="none"/>
+  <circle cx="24" cy="24" r="4.2" fill="currentColor" stroke="none"/>
+  <circle cx="39" cy="24" r="3.4" fill="currentColor" stroke="none"/>
+  <circle cx="21.8" cy="23" r="1" style="fill:var(--bg)" stroke="none"/>
+  <circle cx="26.2" cy="23" r="1" style="fill:var(--bg)" stroke="none"/>
+  <path d="M21.5 26.5 Q24 28 26.5 26.5" style="stroke:var(--bg)" stroke-width="1.8"/>
+  <path d="M24 13.5 L29.5 10 L29.5 17 Z M24 13.5 L18.5 10 L18.5 17 Z" style="fill:var(--accent)" stroke="none"/>
+</svg>

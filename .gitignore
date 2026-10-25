@@ -1,0 +1,55 @@
+# Rust / Tauri
+target/
+src-tauri/target/
+src-tauri/gen/
+
+# Node
+node_modules/
+
+# Build outputs
+dist/
+*.AppImage
+*.deb
+*.rpm
+*.msi
+*.exe
+*.nsis.zip
+/release/
+
+# Datos locales / logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Secretos y credenciales
+.env
+.env.*
+*.pem
+*.key
+cookies*.txt
+*.cookies
+*.token
+*.tokens
+*token*.json
+*sesion*
+*session*.json
+keyring*.json
+
+# Copias de trabajo (protocolo)
+*.wip*
+*.rota
+*.bak
+
+# Binarios de terceros descargados (W5/W6: libmpv-2.dll, yt-dlp.exe, ffmpeg.exe)
+/src-tauri/binaries/*
+!/src-tauri/binaries/README.md
+/src-tauri/resources/*
+!/src-tauri/resources/README.md
+/libmpv-2.lib

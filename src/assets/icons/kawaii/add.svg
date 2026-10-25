@@ -1,0 +1,5 @@
+<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+  <circle cx="24" cy="24" r="16"/>
+  <path d="M24 16.5v15M16.5 24h15" stroke-width="4.5"/>
+  <path d="M39 6.5l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" style="fill:var(--accent)" stroke="none"/>
+</svg>

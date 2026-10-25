@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none"
+     stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Versión reducida del vinilo-play para 20–32 px: 2 aros, trazo grueso y
+       centro sólido. -->
+  <path d="M280 82.5 A180 180 0 1 0 280 429.5" />
+  <path d="M280 146 A120 120 0 1 0 280 366" />
+  <rect x="215" y="239" width="34" height="34" fill="currentColor" stroke="none" />
+  <path d="M280 82.5 L452 256 L280 429.5 Z" />
+</svg>

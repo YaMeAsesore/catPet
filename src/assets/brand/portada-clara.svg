@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <rect width="1600" height="900" fill="#F2EFE3" />
+
+  <g transform="translate(47 24) scale(0.25)" fill="none" stroke="#14130F" stroke-width="22"
+     stroke-linecap="round" stroke-linejoin="round">
+<!-- Versión reducida del vinilo-play para 20–32 px: 2 aros, trazo grueso y
+       centro sólido. -->
+  <path d="M280 82.5 A180 180 0 1 0 280 429.5" />
+  <path d="M280 146 A120 120 0 1 0 280 366" />
+  <rect x="215" y="239" width="34" height="34" fill="currentColor" stroke="none" />
+  <path d="M280 82.5 L452 256 L280 429.5 Z" />
+  </g>
+
+  <g transform="translate(535 25) scale(1.05)" fill="none" stroke="#14130F" stroke-width="5"
+     stroke-linecap="round" stroke-linejoin="round">
+<!-- Personaje geométrico con auriculares (imagen 4). -->
+  <path d="M96 190 A70 70 0 0 0 96 330" />
+  <path d="M74 174 A90 90 0 0 0 74 346" />
+  <path d="M52 158 A110 110 0 0 0 52 362" />
+  <path d="M416 190 A70 70 0 0 1 416 330" />
+  <path d="M438 174 A90 90 0 0 1 438 346" />
+  <path d="M460 158 A110 110 0 0 1 460 362" />
+
+  <path d="M128 232 L138 168 L168 128 L208 104 L256 94 L304 104 L344 128 L374 168 L384 232" />
+  <path d="M158 232 L166 183 L192 150 L225 130 L256 122 L287 130 L320 150 L346 183 L354 232" />
+  <path d="M128 232 L158 232" />
+  <path d="M354 232 L384 232" />
+  <path d="M208 104 L225 130 M304 104 L287 130 M256 94 L256 122" />
+
+  <path d="M112 226 L158 236 L158 358 L112 368 Z" />
+  <path d="M126 244 L146 249 L146 345 L126 350 Z" />
+  <path d="M126 282 L146 286 M126 314 L146 310" />
+  <path d="M400 226 L354 236 L354 358 L400 368 Z" />
+  <path d="M386 244 L366 249 L366 345 L386 350 Z" />
+  <path d="M386 282 L366 286 M386 314 L366 310" />
+
+  <path d="M160 230 L172 178 L196 142 L232 118 L256 112 L280 118 L316 142 L340 178 L352 230
+           L340 290 L312 342 L256 374 L200 342 L172 290 Z" />
+  <path d="M232 118 L256 160 L280 118" />
+  <path d="M196 142 L226 190 L256 160 L286 190 L316 142" />
+  <path d="M172 178 L206 220 L226 190 M340 178 L306 220 L286 190" />
+  <path d="M206 220 L256 246 L306 220" />
+
+  <path d="M204 270 Q220 256 236 270" />
+  <path d="M276 270 Q292 256 308 270" />
+  <path d="M256 278 L246 306 L266 306 Z" />
+  <path d="M238 326 Q256 344 274 326" />
+  <path d="M238 326 L274 326" />
+  <path d="M200 300 L238 326 M312 300 L274 326" />
+
+  <path d="M180 374 L136 496 L376 496 L332 374" />
+  <path d="M206 374 L256 450 L306 374" />
+  <path d="M220 360 L206 374 M292 360 L306 374" />
+  <path d="M256 344 L256 374" />
+  <path d="M168 420 L210 400 M156 456 L198 436 M176 470 L216 430" />
+  <path d="M344 420 L302 400 M356 456 L314 436 M336 470 L296 430" />
+  </g>
+
+  <text x="800" y="702" text-anchor="middle" fill="#14130F"
+        font-family="DejaVu Sans, Liberation Sans, sans-serif" font-size="92" font-weight="700"
+        letter-spacing="2">Música</text>
+  <text x="800" y="760" text-anchor="middle" fill="#55524A"
+        font-family="DejaVu Sans, Liberation Sans, sans-serif" font-size="28"
+        letter-spacing="3">REPRODUCTOR LOCAL · SIN ANUNCIOS NI TRACKING</text>
+</svg>

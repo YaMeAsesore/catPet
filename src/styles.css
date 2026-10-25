@@ -1,0 +1,1270 @@
+/* Tema crema minimalista — TODOS los colores viven aquí como variables.
+   Regla: ningún componente usa colores fuera de esta paleta.
+   Contrastes verificados (WCAG AA): texto/fondo 9.38, muted 4.94,
+   on-accent/acento 4.88, err 6.89, notice 6.05. Variante oscura cálida
+   con los mismos ratios (texto 13.3, muted 6.63, on-accent 5.8). */
+
+/* M1: tipografía de píxeles del chrome «Mac 1-bit» (solo interfaz nueva,
+   clase body.onebit; no afecta a la clásica). Pixelify Sans, licencia OFL 1.1
+   copiada del repositorio oficial junto al propio archivo:
+   src/assets/fonts/OFL-PixelifySans.txt · variable 400–700 · 100 % local. */
+@font-face {
+  font-family: "Pixelify Sans";
+  src: url("./assets/fonts/PixelifySans-Variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  --bg: #E8DFCB;
+  /* BUG 1 (cuadros blancos): sin color-scheme, WebKitGTK dibuja los controles
+     nativos (select/inputs) con el tema claro del sistema e ignora el fondo,
+     pero sí aplica nuestro color de texto crema → ilegible. Declararlo hace
+     que la cara nativa acompañe al tema (además del appearance propio abajo). */
+  color-scheme: light;
+  --bg-sunken: #DBD0B4;
+  --surface: #F1EAD8;
+  --surface-2: #E3D6B8;
+  --border: #C6B696;
+  --border-soft: #D5C8A8;
+  --text: #3E3226;
+  --muted: #6B5B45;
+  --accent: #A6562C;
+  --accent-hover: #944E26;
+  --accent-active: #833F1F;
+  --accent-ink: #7E421F;
+  --on-accent: #FBF6E9;
+  --track: #D2C4A2;
+  --focus-ring: #7E421F;
+  --err-bg: #EFD5C4;
+  --err-border: #B3402A;
+  --err-text: #7A2A1B;
+  --notice-bg: #F2E3C2;
+  --notice-border: #B9862F;
+  --notice-text: #6B4E1F;
+  --scrim: rgba(62, 50, 38, 0.45);
+  --shadow: rgba(62, 50, 38, 0.14);
+  --row-h: 44px;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+/* Variante oscura cálida (misma familia marrón; el toggle sigue funcionando). */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #241B12;
+  --bg-sunken: #191008;
+  --surface: #2E2317;
+  --surface-2: #3A2C1C;
+  --border: #4C3B27;
+  --border-soft: #3E3020;
+  --text: #EDE3D0;
+  --muted: #B49F83;
+  --accent: #D08A4E;
+  --accent-hover: #DA975C;
+  --accent-active: #C67F42;
+  --accent-ink: #E8A76B;
+  --on-accent: #2A1D10;
+  --track: #4C3B27;
+  --focus-ring: #E8A76B;
+  --err-bg: #4A2118;
+  --err-border: #C05A3A;
+  --err-text: #F2C4B2;
+  --notice-bg: #3D2F14;
+  --notice-border: #B9862F;
+  --notice-text: #EACD85;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --shadow: rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%;
+  background: var(--bg); color: var(--text);
+  font: 14px/1.4 system-ui, sans-serif;
+  transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
+}
+#app { height: 100vh; display: flex; flex-direction: column; }
+
+/* ---- Botones ---- */
+button {
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 7px 12px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background-color 0.16s var(--ease), border-color 0.16s var(--ease),
+    transform 0.12s var(--ease), box-shadow 0.16s var(--ease);
+}
+button:hover { background: var(--surface-2); border-color: var(--accent); }
+button:active { transform: scale(0.96); background: var(--surface-2); }
+button:focus-visible {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+button.primary {
+  background: var(--accent); border-color: transparent;
+  color: var(--on-accent); font-weight: 700;
+}
+button.primary:hover { background: var(--accent-hover); border-color: transparent; }
+button.primary:active { background: var(--accent-active); }
+button.icon {
+  border-radius: 50%; width: 38px; height: 38px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 17px; flex: none;
+}
+button.icon.small { width: 32px; height: 32px; }
+button svg { flex: none; display: block; }
+
+/* ---- Estructura ---- */
+main { flex: 1; display: grid; grid-template-columns: 1fr 320px; min-height: 0; transition: grid-template-columns 0.32s var(--ease); }
+/* MEJORA 6: cola minimizada — la lista ocupa el espacio sin saltos. */
+main.queue-min { grid-template-columns: 1fr 46px; }
+section.library { overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.virt { flex: 1; overflow-y: auto; position: relative; contain: strict; }
+.virt::-webkit-scrollbar, aside.queue ol::-webkit-scrollbar { width: 10px; }
+.virt::-webkit-scrollbar-thumb, aside.queue ol::-webkit-scrollbar-thumb {
+  background: var(--border); border-radius: 999px;
+  border: 2px solid var(--bg);
+}
+
+/* ---- Filas (MEJORA 2: delgadas, acciones al hover sin mover layout) ---- */
+.row {
+  height: var(--row-h); display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; border-bottom: 1px solid var(--border-soft); cursor: pointer;
+  border-radius: 10px; position: relative;
+  transition: background-color 0.16s var(--ease), transform 0.18s var(--ease);
+  /* T6: la fila es un <button> real (mismo estilo que antes). */
+  width: 100%; background: transparent; border-top: 0; border-left: 0; border-right: 0;
+  font: inherit; color: inherit; text-align: left;
+}
+/* Contenedor fila + acciones hermanas (el posicionado de .row-actions). */
+.rowwrap { position: relative; }
+.row:hover { background: var(--surface); transform: scale(1.008); }
+.row:active { transform: scale(0.995); }
+.row.active { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--accent); }
+/* Fila en "cargando" tras un clic (el backend confirma qué suena). */
+.row.pending { opacity: 0.55; }
+.row .t { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Punto listo/cargando en filas de YouTube (solo opacity/transform). */
+.rdy {
+  width: 8px; height: 8px; border-radius: 50%; flex: none;
+  background: var(--muted); opacity: 0.5;
+}
+.rdy.ok { background: var(--accent); opacity: 1; }
+/* W4: vista de carga por lote (contador N/50) con pulso sutil; si el
+   usuario pide reduced-motion, se dibuja estática. */
+.yt-loading {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 52px 12px;
+}
+.yt-loading .hint { font-size: 13px; animation: yt-pulse 1.6s ease-in-out infinite; }
+.yt-loading.soft .hint { animation: none; }
+@keyframes yt-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+/* "Cargar más" al final de la lista (W0 regla 7). */
+.yt-more { display: flex; justify-content: center; padding: 8px 0 12px; }
+/* Punto tenue para pistas "sin preparar" (clic con prioridad máxima). */
+.rdy.unprepared { background: var(--accent); opacity: 0.28; }
+.row .t.dead { color: var(--muted); text-decoration: line-through; font-weight: 400; }
+.row .a { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row img { border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+/* Acciones superpuestas a la derecha (no cambian el layout al aparecer). */
+.row-actions {
+  position: absolute; right: 8px; top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  display: flex; gap: 6px; align-items: center;
+  padding: 2px 2px 2px 20px;
+  background: linear-gradient(90deg, transparent, var(--surface) 30%);
+  border-radius: 10px; opacity: 0;
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+}
+.row:hover .row-actions, .row:focus-within .row-actions,
+.rowwrap:hover .row-actions, .rowwrap:focus-within .row-actions {
+  opacity: 1; transform: translateY(-50%) translateX(0);
+}
+.rowbtn {
+  padding: 5px 7px; border-radius: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+/* Corazón de YouTube Music: relleno en acento cuando el tema está guardado. */
+.rowbtn.like.on { color: var(--accent-ink); }
+.rowbtn.like:disabled { opacity: 0.45; cursor: progress; }
+/* Menú flotante "Agregar a playlist" (y de acciones de playlist). */
+.menu {
+  position: absolute; z-index: 30; min-width: 200px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 6px; box-shadow: 0 8px 28px var(--shadow);
+  display: flex; flex-direction: column; gap: 2px;
+  animation: panelIn 0.18s var(--ease);
+}
+.menu button {
+  border: none; background: transparent; justify-content: flex-start;
+  border-radius: 8px; font-weight: 400; width: 100%;
+}
+.menu button:hover { background: var(--surface-2); border: none; }
+.track-menu {
+  position: fixed; z-index: 100; width: 232px;
+  max-height: 320px; overflow-y: auto;
+}
+.menu-hint { color: var(--muted); font-size: 12px; padding: 6px 10px; }
+.menu button .count { color: var(--muted); font-size: 12px; }
+.menu button .check { margin-left: auto; color: var(--accent-ink); font-weight: 700; }
+button.small { padding: 5px 9px; font-size: 13px; border-radius: 9px; }
+/* Barra de importación YouTube (solo la importación en curso). */
+.ytbar {
+  display: flex; gap: 8px; padding: 6px 12px; align-items: center; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-soft);
+  min-height: 46px;
+}
+/* M4: la lista «Mis playlists» de Ajustes pasó a .ob-mine (1-bit); la regla
+   clásica de .ytsub quedó sin usuarios y se retiró. */
+/* Estado vacío de playlist con guía en vez de pantalla en blanco. */
+.plist-empty {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 4px; padding: 28px 16px; color: var(--muted);
+}
+.plist-empty p { margin: 2px 0; }
+.plist-empty .hint { padding: 0; }
+
+/* ---- Cola ---- */
+aside.queue {
+  border-left: 1px solid var(--border-soft); background: var(--surface);
+  display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow: hidden;
+}
+.queue-head { display: flex; align-items: center; gap: 8px; padding: 6px 8px; flex: none; }
+.queue-head .hint { padding: 0; white-space: nowrap; overflow: hidden; }
+.queue-head .hint svg { vertical-align: -4px; }
+main.queue-min .queue-head { justify-content: center; padding: 6px 4px; }
+main.queue-min .queue-head .hint { display: none; }
+.queue-body { flex: 1; display: flex; flex-direction: column; min-height: 0; transition: opacity 0.22s var(--ease); }
+main.queue-min .queue-body { opacity: 0; pointer-events: none; }
+aside.queue ol { flex: 1; overflow-y: auto; margin: 0; padding: 6px; list-style: none; }
+/* MEJORA 1: cola compacta de una sola línea (número + título + × al hover). */
+aside.queue li {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 6px; font-size: 13px; border-radius: 8px; cursor: grab;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background-color 0.16s var(--ease);
+}
+/* P4-03: hueco de la ventana (filas no montadas); no es una fila real. */
+aside.queue li.q-gap { padding: 0; border: 0; pointer-events: none; }
+aside.queue li:hover { background: var(--surface-2); }
+aside.queue li.cur { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--accent); }
+aside.queue li.drop-target { box-shadow: inset 0 2px 0 var(--accent); }
+aside.queue li.drop-end { box-shadow: inset 0 -2px 0 var(--accent); }
+.qnum { color: var(--muted); font-size: 12px; min-width: 20px; text-align: right; flex: none; }
+.qgrip { color: var(--muted); display: inline-flex; opacity: 0; flex: none; cursor: grab; transition: opacity 0.16s var(--ease); touch-action: none; background: none; border: 0; padding: 0; font: inherit; }
+aside.queue li:hover .qgrip, aside.queue li:focus-within .qgrip { opacity: 0.8; }
+.qgrip:active { cursor: grabbing; }
+.qt { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+/* T6: el título de la cola es un botón real (mismo aspecto que el span). */
+.qt-btn { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+aside.queue li.cur .qt { font-weight: 700; }
+.qacts { display: flex; gap: 2px; flex: none; opacity: 0; transition: opacity 0.16s var(--ease); }
+aside.queue li:hover .qacts, aside.queue li:focus-within .qacts { opacity: 1; }
+.qacts button { padding: 3px 5px; border-radius: 7px; }
+.qacts button:disabled { opacity: 0.3; }
+
+/* ---- Reproductor ---- */
+/* --player-pad-top = padding-top + border-top del footer (10px + 1px = 11px).
+   Lo usa .ob-cover para compensar y lograr gap de 8px exactos. */
+footer.player {
+  --player-pad-top: 11px;
+  display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  background: var(--surface); border-top: 1px solid var(--border-soft);
+}
+footer .meta { min-width: 200px; max-width: 300px; }
+footer.player .like { flex: none; }
+footer.player .like.on { color: var(--accent-ink); }
+footer.player .like:disabled { opacity: 0.45; cursor: progress; }
+footer .meta b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+footer .meta span { color: var(--muted); font-size: 12px; }
+footer .cover { border-radius: 10px; object-fit: cover; flex: none; box-shadow: 0 2px 8px var(--shadow); }
+@keyframes coverIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+footer .cover-in { animation: coverIn 0.28s var(--ease); }
+/* La carátula del footer también abre el modal (botón nativo). */
+.cover-btn {
+  background: transparent; border-color: transparent; padding: 0;
+  border-radius: 12px; flex: none; line-height: 0;
+}
+.cover-btn:hover { background: transparent; border-color: var(--accent); }
+.cover-btn:active { transform: scale(0.94); }
+
+/* ---- Deslizadores (progreso + volumen) ---- */
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  background: transparent; cursor: pointer; height: 22px; margin: 0;
+  /* Margen lateral = el thumb nunca sobresale de los extremos de la barra. */
+  padding: 0 8px;
+  --fill: 0%;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 999px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-color: var(--track);
+  background-repeat: no-repeat;
+  background-size: var(--fill) 100%;
+  transition: height 0.18s var(--ease), background-size 0.35s linear;
+}
+input[type="range"]:hover::-webkit-slider-runnable-track,
+input[type="range"]:focus-visible::-webkit-slider-runnable-track,
+input[type="range"]:active::-webkit-slider-runnable-track { height: 9px; }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); border: none; margin-top: -4.5px;
+  box-shadow: 0 1px 5px var(--shadow);
+  opacity: 0; transform: scale(0.6);
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease), margin-top 0.18s var(--ease);
+}
+/* BUG 2 (thumb desalineado): el margen compensa (pista − thumb)/2 y DEBE
+   acompañar a la altura de la pista: 6px→-4.5px, 9px→-3px. Sin esto, al hover
+   la pista crece y el círculo queda 1.5px por encima. */
+input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:focus-visible::-webkit-slider-thumb { opacity: 1; transform: scale(1); margin-top: -3px; }
+input[type="range"]:active::-webkit-slider-thumb { opacity: 1; transform: scale(1.3); margin-top: -3px; }
+input[type="range"]:focus-visible { outline: none; }
+input[type="range"]::-moz-range-track {
+  height: 6px; border-radius: 999px; background: var(--track);
+}
+input[type="range"]:hover::-moz-range-track,
+input[type="range"]:focus-visible::-moz-range-track { height: 9px; }
+input[type="range"]::-moz-range-progress {
+  height: 6px; border-radius: 999px; background: var(--accent);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); border: none;
+  box-shadow: 0 1px 5px var(--shadow);
+  opacity: 0; transform: scale(0.6);
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+}
+input[type="range"]:hover::-moz-range-thumb,
+input[type="range"]:focus-visible::-moz-range-thumb,
+input[type="range"]:active::-moz-range-thumb { opacity: 1; transform: scale(1); }
+
+/* Resplandor sutil mientras suena; en pausa se atenúa y se congela. */
+@keyframes sheen {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.14); }
+}
+footer.player.playing input.progress {
+  animation: sheen 2.6s ease-in-out infinite;
+}
+footer.player:not(.playing) input.progress {
+  filter: saturate(0.65) opacity(0.8);
+}
+
+/* ---- Volumen ---- */
+.vol-wrap { display: flex; align-items: center; gap: 6px; flex: none; }
+.vol-wrap input[type="range"] { width: 110px; }
+@keyframes pop {
+  0% { transform: scale(0.55); }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.vol-icon { display: inline-block; animation: pop 0.22s var(--ease); }
+
+/* ---- Textos y avisos ---- */
+.hint { color: var(--muted); font-size: 12px; padding: 6px 12px; }
+/* Estado "cargando": mpv aún no confirma (PlaybackRestart). Sutil y en tema. */
+.loading-dots {
+  color: var(--accent-ink); font-size: 12px; font-weight: 600; white-space: nowrap;
+  animation: loadingPulse 1.2s ease-in-out infinite;
+}
+@keyframes loadingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+/* Toast de confirmación breve (BUG 3: feedback al agregar). */
+.toast {
+  position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%);
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--accent); border-radius: 999px;
+  padding: 8px 18px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 28px var(--shadow); z-index: 120;
+  animation: toastIn 0.22s var(--ease);
+  white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+/* D5/M4: el panel de descargas (chip + panel) se reescribió en 1-bit; sus
+   reglas viven en la sección «M4» al final del archivo. */
+/* Estado vacío de la cola. */
+.queue-empty {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 6px; padding: 24px 12px; color: var(--muted); font-size: 13px;
+}
+.err {
+  display: flex; gap: 8px; align-items: center; padding: 8px 14px;
+  background: var(--err-bg); color: var(--err-text);
+  border-bottom: 1px solid var(--err-border); font-size: 13px;
+}
+.err button { margin-left: auto; }
+.select-wrap { position: relative; display: inline-flex; align-items: center; }
+.select-wrap::after {
+  content: "▾"; position: absolute; right: 11px; top: 50%;
+  transform: translateY(-50%); color: var(--muted);
+  font-size: 12px; pointer-events: none;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}.notice, .err { animation: panelIn 0.22s var(--ease); }
+
+/* Indicador de motor de audio activo: reescrito en 1-bit como .ob-engine
+   (sección M4 al final); el clásico se retiró con Ajustes. */
+
+/* Aviso de restricción de Spotify (proxy de política, no error fatal) */
+.notice {
+  background: var(--notice-bg); border-bottom: 1px solid var(--notice-border);
+  color: var(--notice-text); padding: 8px 14px;
+  display: flex; gap: 8px; align-items: center;
+}
+.notice .hint { color: var(--notice-text); opacity: 0.85; }
+.notice button { margin-left: auto; }
+
+/* ---- Modal de portada (no tapa la franja del reproductor) ----
+   MEJORA 1/M4: la entrada/salida la animan transiciones Svelte (fade/scale,
+   300/340 ms, solo transform+opacity) con duraciones a 0 si hay
+   prefers-reduced-motion. El scrim, la lámina y el × son 1-bit (sección M4).
+   NOTA HONESTA: libmpv no expone datos de audio (sin FFT en su API cliente),
+   así que las ondas son simuladas (rotación+pulsación suaves). */
+.art-stage {
+  position: relative; width: 276px; max-width: 72vw;
+  aspect-ratio: 1; display: grid; place-items: center;
+}
+/* MEJORA 2 (canvas): el componente Waves dibuja los anillos; aquí solo layout.
+   En pausa el canvas atenúa por CSS y el bucle rAF se detiene (sin CPU). */
+.waves-canvas {
+  position: absolute; inset: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.waves-canvas.dim { opacity: 0.3; }
+
+/* Movimiento reducido: sin animaciones ni transiciones. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  footer.player.playing input.progress { animation: none; }
+}
+
+/* ---- U1: interfaz nueva (armazón con barra lateral) ----
+   Todo esto solo se usa con el interruptor temporal musica.ui2 activo; la
+   interfaz clásica no monta la barra lateral. .shell envuelve a main también
+   con el interruptor apagado: es transparente (mismo alto/ancho que antes). */
+.shell { flex: 1; display: flex; min-height: 0; }
+.shell > main { flex: 1; min-width: 0; }
+aside.sidebar {
+  width: 224px; flex: none; background: var(--surface);
+  border-right: 1px solid var(--border-soft);
+  display: flex; flex-direction: column; min-height: 0;
+  transition: width 0.22s var(--ease);
+}
+aside.sidebar.folded { width: 56px; }
+.sb-head { display: flex; align-items: center; gap: 8px; padding: 10px 10px 8px 14px; }
+.sb-logo { color: var(--accent); font-size: 18px; font-weight: 700; flex: none; display: inline-flex; align-items: center; }
+.sb-title { font-weight: 700; }
+.sb-fold { margin-left: auto; }
+.sb-scroll { flex: 1; overflow-y: auto; min-height: 0; padding-bottom: 8px; }
+.sb-sec {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); padding: 10px 14px 2px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; margin: 1px 8px; border-radius: 9px;
+  font-size: 13px; min-width: 0;
+}
+.sb-item .lbl, .sb-item .count { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-item .lbl { flex: 1; min-width: 0; }
+.sb-item .count { color: var(--muted); font-size: 12px; flex: none; }
+.sb-item.active { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--accent); }
+.sb-status {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 14px; color: var(--muted); font-size: 12px;
+}
+.sb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); opacity: 0.5; flex: none; }
+.sb-dot.ok { background: var(--accent); opacity: 1; }
+.sb-empty { color: var(--muted); font-size: 12px; padding: 2px 14px 6px; }
+.sb-add { margin: 8px 10px 10px; justify-content: flex-start; }
+/* Plegada (manual o automática por ancho): solo iconos y el logo. */
+aside.sidebar.folded .txt, aside.sidebar.folded .lbl { display: none; }
+aside.sidebar.folded .sb-head { justify-content: center; padding-left: 6px; padding-right: 6px; }
+aside.sidebar.folded .sb-fold { margin-left: 0; }
+aside.sidebar.folded .sb-item, aside.sidebar.folded .sb-status { justify-content: center; padding: 7px 6px; }
+aside.sidebar.folded .sb-add { justify-content: center; }
+@media (max-width: 1000px) {
+  aside.sidebar { width: 56px; }
+  aside.sidebar .txt, aside.sidebar .lbl { display: none; }
+  aside.sidebar .sb-head { justify-content: center; padding-left: 6px; padding-right: 6px; }
+  aside.sidebar .sb-fold { margin-left: 0; }
+  aside.sidebar .sb-item, aside.sidebar .sb-status { justify-content: center; padding: 7px 6px; }
+  aside.sidebar .sb-add { justify-content: center; }
+}
+
+/* ---- U2: barra lateral funcional (menú ⋯ / clic derecho) y diálogos ---- */
+.sb-row { display: flex; align-items: center; margin: 1px 8px; }
+.sb-row .sb-item { margin: 0; flex: 1; min-width: 0; }
+button.sb-item {
+  border: none; background: transparent; font: inherit; color: inherit;
+  cursor: pointer; text-align: left;
+}
+button.sb-item:hover { background: var(--surface-2); border: none; }
+button.sb-item:active { transform: none; background: var(--surface-2); }
+button.sb-item:disabled { opacity: 0.45; cursor: not-allowed; }
+.sb-more { opacity: 0; flex: none; }
+.sb-row:hover .sb-more, .sb-row:focus-within .sb-more, .sb-more[aria-expanded="true"] { opacity: 1; }
+.sb-menu { position: fixed; z-index: 110; width: 204px; }
+aside.sidebar.folded .sb-more { display: none; }
+@media (max-width: 1000px) {
+  .sb-more { display: none; }
+}
+/* Deshacer (toast con acción): encima del toast normal para no solaparse. */
+.toast-undo { bottom: 124px; display: flex; align-items: center; gap: 10px; }
+/* ---- U3/U4/M4: Ajustes, asistente y descargas se reescribieron en 1-bit ----
+   (ventana ObModal, navegación de secciones, tarjetas y chip/panel de
+   descargas); sus reglas viven en la sección «M4» al final del archivo. Aquí
+   solo queda el scroll contenido de los paneles nuevos. */
+.sb-scroll { overscroll-behavior: contain; }
+
+/* ---- S2/S4: vista previa de CSV y «Buscar otra versión» -------------------
+   M4: la vista y las variantes se reescribieron en 1-bit (ventana ObModal;
+   filas y chips de tinta/papel); sus reglas viven en la sección «M4» al final.
+   Aquí solo quedan los avisos del barrido compartidos con CtxMusica. */
+.csvall-cur { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.csvall-wait { color: var(--accent); }
+
+/* ---- Sistema «Mac 1-bit» (clase body.onebit) -------------------------------
+   App.svelte fija `onebit` en <body>. Claro = tinta sobre papel blanco roto
+   (nunca #FFF); oscuro = la inversa. Sin matices de color: los contextos se
+   distinguen por icono y patrón de rayas en la franja de título. Prohibido
+   backdrop-filter, blur, sombras difusas y degradados animados (render por
+   software, ./musica.sh soft): la única sombra es dura (2 px, sin desenfoque)
+   y la trama de puntos (`--dither`) es estática y solo para márgenes, nunca
+   detrás de listas de texto.
+   Contraste WCAG AA medido (M1, scripts/wcag.mjs): claro — texto/papel 16.14,
+   secundario/papel 6.77, texto/elevado 14.72, secundario/elevado 6.18,
+   selección (papel/tinta) 16.14, borde y foco 16.14; oscuro — texto/fondo
+   15.29, secundario/fondo 7.50, texto/elevado 14.04, secundario/elevado 6.88,
+   selección 15.29, borde y foco 15.29; separadores (decorativos) 1.52/1.58. */
+body.onebit {
+  color-scheme: light;
+  --paper: #F2EFE3;          /* papel (blanco roto) */
+  --paper-2: #E9E5D5;        /* elevado / hover */
+  --paper-3: #DDD8C4;        /* hundido / pistas */
+  --ink: #14130F;            /* tinta (implementa texto, bordes y selección) */
+  --ink-soft: #55524A;       /* secundario */
+  --rule: #C9C4B2;           /* separadores finos (decorativos) */
+  --bg: var(--paper);
+  --bg-sunken: var(--paper-3);
+  --surface: var(--paper);
+  --surface-2: var(--paper-2);
+  --border: var(--ink);
+  --border-soft: var(--rule);
+  --text: var(--ink);
+  --muted: var(--ink-soft);
+  --accent: var(--ink);      /* la acción principal es la inversión, no un color */
+  --accent-hover: #2A2823;
+  --accent-active: #000000;
+  --accent-ink: var(--ink);
+  --on-accent: var(--paper);
+  --track: var(--paper-3);
+  --focus-ring: var(--ink);
+  --err-bg: var(--ink);
+  --err-border: var(--ink);
+  --err-text: var(--paper);
+  --notice-bg: var(--paper-2);
+  --notice-border: var(--ink);
+  --notice-text: var(--ink);
+  --scrim: rgba(20, 19, 15, 0.5);
+  --shadow: rgba(20, 19, 15, 0.28);   /* legado; las caras nuevas usan --shadow-hard */
+  --shadow-hard: 2px 2px 0 0 var(--ink);
+  --font-pixel: "Pixelify Sans", system-ui, sans-serif;
+  --font-text: system-ui, "Noto Sans", "Noto Sans CJK JP", "Noto Sans CJK HK", sans-serif;
+  --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%2314130F'/%3E%3C/svg%3E");
+  /* Patrones de rayas por contexto: SOLO en la franja de título. */
+  --stripe-musica: repeating-linear-gradient(0deg, var(--ink) 0 1px, transparent 1px 4px);
+  --stripe-youtube: repeating-linear-gradient(45deg, var(--ink) 0 1px, transparent 1px 5px);
+  --stripe-radios: repeating-linear-gradient(90deg, var(--ink) 0 1px, transparent 1px 4px);
+  --stripe-servidores:
+    repeating-linear-gradient(0deg, var(--ink) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(90deg, var(--ink) 0 1px, transparent 1px 5px);
+  --stripe-spotify: repeating-linear-gradient(-45deg, var(--ink) 0 1px, transparent 1px 5px);
+  font-family: var(--font-text);
+}
+[data-theme="dark"] body.onebit {
+  color-scheme: dark;
+  --paper: #131210;          /* fondo oscuro */
+  --paper-2: #1D1B18;
+  --paper-3: #2A2823;
+  --ink: #EDE8DA;            /* tinta clara (papel en oscuro) */
+  --ink-soft: #A9A492;
+  --rule: #3A3730;
+  --accent-hover: #FBF8EF;
+  --accent-active: #FFFFFF;
+  --scrim: rgba(0, 0, 0, 0.65);
+  --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%23EDE8DA'/%3E%3C/svg%3E");
+}
+
+/* Chrome en píxel (menús, barras de título y cabeceras); el texto de pistas y
+   formularios queda en --font-text (legible, con respaldo CJK para los títulos
+   en japonés de la biblioteca). Texto base ≥ 14 px en la interfaz nueva. */
+body.onebit .menu button, body.onebit .sb-title, body.onebit .ob-bar-title {
+  font-family: var(--font-pixel);
+}
+body.onebit .row .t, body.onebit .menu button, body.onebit button.small,
+body.onebit .sb-item, body.onebit .ob-check { font-size: 14px; }
+body.onebit .row .a { font-size: 13px; }
+
+/* Esquinas rectas en TODO lo que cuelga del armazón 1-bit: además de la lista
+   explícita (documenta lo que antes redondeaba), la regla universal garantiza
+   radio 0 en cualquier pieza nueva que herede un radio clásico (incluye cola,
+   chip de motor, panel de descargas, ecualizador y modales). Los pseudoelementos
+   de scrollbar y de los rangos se anulan aparte (no los alcanza `*`). */
+body.onebit *, body.onebit *::before, body.onebit *::after { border-radius: 0; }
+body.onebit button, body.onebit input, body.onebit select, body.onebit .menu,
+body.onebit .ob-dlg, body.onebit .ctxbar,
+body.onebit .sb-item, body.onebit .row, body.onebit .row-actions, body.onebit .rowbtn,
+body.onebit .ob-dlchip, body.onebit .art, body.onebit img, body.onebit .sb-dot,
+body.onebit .rdy, body.onebit .ob-csv-list .virt, body.onebit .ob-cvar-list,
+body.onebit .ob-add-card, body.onebit .track-menu,
+body.onebit .ob-csv-chip, body.onebit .ob-csv-play, body.onebit .ob-csv-var,
+body.onebit .toast { border-radius: 0; }
+body.onebit button, body.onebit input, body.onebit select, body.onebit .menu,
+body.onebit .ob-dlg, body.onebit .ob-csv-list .virt, body.onebit .ob-cvar-list,
+body.onebit .ob-add-card, body.onebit .ob-dlchip, body.onebit .toast { border-width: 2px; }
+body.onebit aside.sidebar { border-right: 2px solid var(--ink); }
+
+/* Botones: rectángulo de tinta con inversión al pasar el ratón o enfocar. */
+body.onebit button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+body.onebit button:hover svg { color: currentColor; }
+body.onebit button:hover .count { color: var(--paper); }
+body.onebit button.primary { background: var(--ink); color: var(--paper); }
+body.onebit button.primary:hover { background: var(--accent-hover); color: var(--paper); }
+body.onebit button:disabled { opacity: 0.4; }
+body.onebit button:focus-visible, body.onebit input:focus, body.onebit select:focus,
+body.onebit textarea:focus {
+  outline: 2px dashed var(--ink); outline-offset: 2px;
+  box-shadow: none; border-color: var(--ink);
+}
+
+/* Menús, avisos y toasts: borde de 2 px + sombra dura (las ventanas de diálogo
+   llevan la suya en onebit/Window.svelte). */
+body.onebit .menu, body.onebit .toast { box-shadow: var(--shadow-hard); border-color: var(--ink); }
+body.onebit .menu button:hover { background: var(--ink); color: var(--paper); }
+body.onebit .menu button:hover .count { color: var(--paper); }
+
+/* Selección invertida en las listas: la pista activa cambia tinta por papel.
+   M3.2: el hover de fila TAMBIÉN invierte (antes era solo un fondo crema) y
+   pierde la escala heredada de la fila clásica (`scale(1.008)`/`0.995`): la
+   sonda de overflow midió que no creaba scroll horizontal real, pero el zoom
+   del 0,8 % hacía «bailar» la fila 1-bit. El contraste del par invertido se
+   mide en scripts/wcag.mjs (papel sobre tinta). */
+body.onebit .row:hover {
+  background: var(--ink); color: var(--paper);
+  transform: none;
+}
+body.onebit .row:active { transform: none; }
+body.onebit .row:hover .t, body.onebit .row:hover .a, body.onebit .row:hover .hint,
+body.onebit .row:hover .rowbtn { color: var(--paper); }
+body.onebit .row:hover .rdy { background: var(--paper); }
+body.onebit .row.active { background: var(--ink); color: var(--paper); box-shadow: none; }
+body.onebit .row.active:hover { background: var(--ink); }
+body.onebit .row.active .a, body.onebit .row.active .hint { color: var(--paper); }
+/* Acciones de fila: fondo sólido (el degradado clásico de .row-actions no
+   existe en 1-bit; los botones se separan por borde, no por fundido). */
+body.onebit .row-actions { background: var(--paper-2); border: 2px solid var(--ink); }
+
+/* Cabecera contextual 1-bit: la «ventana» (borde 2 px, sombra dura, franja de
+   rayas del contexto y chip con el icono 16×16) la dibuja Window desde M3:
+   icono + rayas + texto, sin matices. Aquí solo el margen y el fundido al
+   cambiar de contexto (150–220 ms, ease-out, solo opacity; con
+   prefers-reduced-motion lo anula el bloque global). */
+body.onebit .ctxbar { margin: 10px 14px 4px; animation: ctx-in 180ms ease-out; }
+@keyframes ctx-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Selección invertida en la barra lateral (los data-ctx quedan para M2: ya no
+   hay matices de color; el activo se marca invirtiendo tinta/papel). */
+body.onebit .sb-item.active { background: var(--ink); color: var(--paper); box-shadow: none; }
+body.onebit .sb-item.active .count { color: var(--paper); }
+body.onebit button.sb-item:hover { background: var(--ink); color: var(--paper); }
+body.onebit button.sb-item:hover .count { color: var(--paper); }
+
+/* ---- V2/M1: «Música local» (filas + acciones de la cabecera) ---------------
+   Solo con el interruptor contextual encendido (ui2 + musica.uiContextos): la
+   MISMA pareja que usa VirtualList en JS para la altura de fila. Piel 1-bit:
+   bordes de tinta, esquinas rectas e inversión en la pista activa. La fila
+   clásica (44 px, sin marcador ni ecualizador) no cambia. */
+body.ui-ctx { --row-h: 56px; }
+
+/* Acciones de la cabecera: a la derecha del título (el contenedor lo pone
+   Window, .ob-bar-acts); los avisos van dentro de la tarjeta y no llevan el
+   padding de .hint. El aviso ⚠ del lote de YouTube se distingue por caja y
+   texto, nunca por color. */
+.ob-bar-acts .hint { padding: 0; }
+.ctx-hint { max-width: 46ch; line-height: 1.35; text-align: right; }
+.ctx-warn {
+  max-width: 42ch; padding: 2px 8px;
+  background: var(--paper-2); border: 2px solid var(--ink); color: var(--ink);
+  font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ctx-more { position: relative; }
+.ctx-menu { top: calc(100% + 6px); right: 0; min-width: 220px; }
+
+/* Filas: portada 40 px redondeada o marcador si no hay arte; duración con
+   cifras tabulares; las acciones aparecen al pasar el ratón o al enfocar con
+   teclado (regla existente), ahora sobre fondo sólido (sin degradado). */
+body.ui-ctx .row { gap: 12px; }
+body.ui-ctx .row .art {
+  width: 40px; height: 40px; flex: none; border-radius: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--paper-2); border: 2px solid var(--ink);
+  color: var(--ink-soft);
+}
+body.ui-ctx .row .art img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+body.ui-ctx .row .hint { font-variant-numeric: tabular-nums; min-width: 42px; text-align: right; }
+body.ui-ctx .row-actions {
+  background: var(--paper-2); border: 2px solid var(--ink);
+  padding: 3px 5px;
+}
+
+/* Pista activa: barra de acento (ya existente) + ecualizador simple. Solo
+   transform; con prefers-reduced-motion el bloque global termina la animación
+   de inmediato y las barras quedan quietas en sus alturas base. */
+body.ui-ctx .eq { display: inline-flex; align-items: flex-end; gap: 2px; width: 14px; height: 14px; flex: none; }
+body.ui-ctx .eq i {
+  flex: 1; height: 100%; background: var(--accent); border-radius: 2px;
+  transform-origin: 50% 100%;
+  animation: eq-b 1.1s ease-in-out infinite;
+}
+body.ui-ctx .eq i:nth-child(1) { transform: scaleY(0.45); animation-delay: 0ms; }
+body.ui-ctx .eq i:nth-child(2) { transform: scaleY(0.9);  animation-delay: 180ms; }
+body.ui-ctx .eq i:nth-child(3) { transform: scaleY(0.6);  animation-delay: 360ms; }
+@keyframes eq-b {
+  0%, 100% { transform: scaleY(0.35); }
+  45% { transform: scaleY(1); }
+  70% { transform: scaleY(0.55); }
+}
+/* Pista activa (invertida): el ecualizador y el punto «listo» pasan a papel
+   para seguir visibles sobre la tinta; el movimiento sigue siendo solo
+   `transform` (con reduced-motion quedan quietos, como hoy). */
+body.onebit .eq i { border-radius: 0; }
+body.onebit .row.active .eq i { background: var(--paper); }
+body.onebit .row.active .rdy.ok { background: var(--paper); }
+body.onebit .row.active .rdy { background: var(--paper); opacity: 0.5; }
+
+/* ---- M2: barra de menú, cabeceras, barra lateral, cola y reproductor ------
+   Solo con la interfaz nueva (body.onebit). La barra de menú reúne menús,
+   búsqueda y estado; debajo queda la barra de herramientas con borde fino.
+   Sigue la piel de M1: tinta/papel, esquinas rectas, borde de 2 px, sombra
+   dura (sin desenfoque) y selección por inversión; nada de matices de color
+   (el estado se distingue por caja/trama, no por color). */
+
+/* Barra de menú */
+body.onebit .mb {
+  display: flex; align-items: center; gap: 10px; min-width: 0;
+  padding: 4px 8px; background: var(--paper);
+  border-bottom: 2px solid var(--ink);
+  position: relative; z-index: 40;
+}
+/* Marca de la app en la barra de herramientas (logo + nombre). */
+body.onebit .mb-brand {
+  display: inline-flex; align-items: center; gap: 7px; flex: none;
+  padding: 2px 9px 2px 3px; margin-right: 1px;
+  background: transparent; border: 0; border-right: 1px solid var(--rule);
+  color: var(--ink); font-family: var(--font-pixel);
+}
+body.onebit .mb-brand:hover { background: var(--paper-2); color: var(--ink); border-color: var(--rule); }
+body.onebit .mb-brand:active { transform: none; background: var(--paper-3); }
+body.onebit .mb-brand-name { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+@media (max-width: 1080px) {
+  body.onebit .mb-brand-name { display: none; }
+  body.onebit .mb-brand { border-right: 0; padding-right: 4px; }
+}
+body.onebit .mb-menus { display: flex; align-items: center; gap: 2px; flex: none; }
+body.onebit .mb-item { position: relative; }
+body.onebit .mb-btn {
+  background: transparent; border-color: transparent;
+  padding: 3px 9px; font-family: var(--font-pixel); font-size: 14px; font-weight: 600;
+}
+body.onebit .mb-btn.open { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+body.onebit .mb-panel {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 70;
+  min-width: 236px; max-width: 360px;
+  display: flex; flex-direction: column;
+  background: var(--paper); border: 2px solid var(--ink);
+  box-shadow: var(--shadow-hard); padding: 3px;
+}
+body.onebit .mb-entry {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 5px 8px; text-align: left;
+  background: transparent; border-color: transparent;
+  font-family: var(--font-pixel); font-size: 14px;
+}
+body.onebit .mb-entry:hover:not(:disabled) { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+body.onebit .mb-entry:disabled { opacity: 0.45; }
+body.onebit .mb-check { width: 15px; flex: none; display: inline-flex; align-items: center; justify-content: center; }
+body.onebit .mb-lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.onebit .mb-sep {
+  font-family: var(--font-text); font-size: 11px; color: var(--muted);
+  padding: 5px 8px 3px; border-top: 1px solid var(--rule); margin-top: 3px;
+}
+body.onebit .mb-sep:empty { height: 2px; padding: 0; margin: 5px 4px; background: var(--ink); border: 0; }
+
+/* Búsqueda y estado (contador, sesión, límite, chip de descargas) */
+body.onebit .mb-search {
+  flex: 1 1 180px; min-width: 120px; max-width: 420px; margin-left: auto;
+  display: flex; align-items: center; gap: 7px;
+  background: var(--paper); border: 2px solid var(--ink); padding: 0 7px;
+}
+body.onebit .mb-search input {
+  flex: 1; min-width: 0; border: 0; background: transparent;
+  padding: 4px 0; font-family: var(--font-text); font-size: 13px; color: var(--ink);
+}
+body.onebit .mb-search input:focus { outline: none; box-shadow: none; }
+body.onebit .mb-search:focus-within { outline: 2px dashed var(--ink); outline-offset: 2px; }
+body.onebit .mb-status { display: flex; align-items: center; gap: 14px; flex: none; min-width: 0; }
+body.onebit .mb-count {
+  font-size: 12.5px; color: var(--muted);
+  max-width: 30ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body.onebit .mb-session {
+  display: inline-flex; align-items: center; gap: 6px; min-width: 0;
+  font-size: 12.5px; color: var(--muted);
+}
+body.onebit .mb-session-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.onebit .mb-dot { width: 9px; height: 9px; flex: none; border: 2px solid var(--ink); }
+body.onebit .mb-dot.ok { background: var(--ink); }
+body.onebit .mb-limit {
+  font-size: 12.5px; white-space: nowrap;
+  color: var(--paper); background: var(--ink); border: 2px solid var(--ink); padding: 1px 7px;
+}
+/* El chip de descargas vive en la barra; su panel cae debajo, a la derecha. */
+body.onebit .mb-dl { position: relative; display: inline-flex; align-items: center; }
+body.onebit .mb-dl .ob-dlchip { position: static; }
+body.onebit .mb-dl .ob-dlpanel {
+  position: absolute; top: calc(100% + 8px); right: 0; left: auto; bottom: auto;
+  z-index: 100;
+}
+@media (max-width: 1240px) { body.onebit .mb-count { max-width: 18ch; } }
+@media (max-width: 1120px) { body.onebit .mb-session-txt { display: none; } }
+@media (max-width: 1000px) { body.onebit .mb-count { max-width: 10ch; } }
+
+/* Barra de herramientas: RETIRADA en M3.2 (componente ViewHeader borrado).
+   Sus funciones viven en los menús («Añadir carpeta…» y «Ajustes…» en
+   Archivo, tema y densidad en Ver) y el título/sub lo muestra la cabecera
+   contextual. El espacio recuperado lo aprovecha la lista. */
+
+/* Barra lateral: remates 1-bit que M1 no cubría (logo, punto de sesión) */
+body.onebit .sb-logo { font-family: var(--font-pixel); }
+body.onebit .sb-dot { width: 9px; height: 9px; border: 2px solid var(--ink); background: transparent; opacity: 1; }
+body.onebit .sb-dot.ok { background: var(--ink); }
+body.onebit .sb-status { color: var(--ink-soft); }
+
+/* Cola: cabecera con raya de 2 px, fila activa invertida y texto base 14 px */
+body.onebit aside.queue { border-left: 2px solid var(--ink); }
+body.onebit .queue-head { border-bottom: 2px solid var(--ink); }
+body.onebit .queue-head .hint { font-family: var(--font-pixel); font-size: 14px; }
+body.onebit aside.queue li { font-size: 14px; border-radius: 0; }
+body.onebit aside.queue li.cur,
+body.onebit aside.queue li.cur:hover { background: var(--ink); color: var(--paper); box-shadow: none; }
+body.onebit aside.queue li.cur .qt { color: var(--paper); }
+body.onebit aside.queue li.cur .qnum,
+body.onebit aside.queue li.cur .qgrip { color: var(--paper); }
+body.onebit aside.queue ol::-webkit-scrollbar-thumb { background: var(--ink); border-radius: 0; }
+
+/* Reproductor: raya de 2 px, portada con borde fino y sin animaciones de
+   degradado (el «brillo» del progreso y el filtro de saturación sobran en
+   1-bit; el movimiento permitido sigue siendo solo transform/opacity). */
+body.onebit footer.player { border-top: 2px solid var(--ink); }
+body.onebit footer .cover { border: 2px solid var(--ink); box-shadow: none; }
+body.onebit footer.player.playing input.progress { animation: none; }
+body.onebit footer.player:not(.playing) input.progress { filter: none; opacity: 1; }
+
+/* Ventana «Atajos de teclado» (Ayuda): M4 la pasó a ObModal (.ob-atajos en la
+   sección M4). Aquí solo queda constancia del cambio. */
+
+/* ---- M3.2: scrollbars, rangos, modal de portada y tooltips --------------- */
+
+/* Scrollbars WebKit 1-bit: 14 px, esquinas rectas (sin píldoras), pista de
+   papel y pulgar de tinta con marco de 2 px de papel. Cubre lista, cola,
+   barra lateral y cualquier panel (el thumb clásico era redondo). */
+body.onebit ::-webkit-scrollbar { width: 14px; height: 14px; }
+body.onebit ::-webkit-scrollbar-track { background: var(--paper); }
+body.onebit ::-webkit-scrollbar-thumb {
+  background: var(--ink); border: 2px solid var(--paper); border-radius: 0;
+}
+body.onebit ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
+body.onebit ::-webkit-scrollbar-corner { background: var(--paper); }
+
+/* Rangos (progreso y volumen): pista y pulgar cuadrados, sin píldoras, sin
+   sombra difusa y sin hincharse al pasar el ratón (solo aparece el pulgar).
+   El margen del pulgar mantiene la compensación de la pista (6/9 px). */
+body.onebit input[type="range"] { padding: 0 6px; }
+body.onebit input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 0;
+}
+body.onebit input[type="range"]:hover::-webkit-slider-runnable-track,
+body.onebit input[type="range"]:focus-visible::-webkit-slider-runnable-track,
+body.onebit input[type="range"]:active::-webkit-slider-runnable-track { height: 6px; }
+body.onebit input[type="range"]::-webkit-slider-thumb {
+  width: 14px; height: 14px; border-radius: 0;
+  background: var(--ink); border: 2px solid var(--ink);
+  box-shadow: none; margin-top: -4px;
+}
+body.onebit input[type="range"]:hover::-webkit-slider-thumb,
+body.onebit input[type="range"]:focus-visible::-webkit-slider-thumb,
+body.onebit input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1); margin-top: -4px;
+}
+body.onebit input[type="range"]::-moz-range-track { height: 6px; border-radius: 0; background: var(--paper-2); }
+body.onebit input[type="range"]::-moz-range-progress { height: 6px; border-radius: 0; background: var(--ink); }
+body.onebit input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 0; background: var(--ink); border: 2px solid var(--ink);
+  box-shadow: none;
+}
+
+/* Modal de portada: ventana cuadrada con borde de 2 px y sombra dura; sin
+   degradados ni color (el fondo del hueco es papel elevado) y los aros de
+   Waves quedan congelados en tinta (prop `estatico`). M4 renombró la lámina a
+   .ob-cover/.ob-art/.ob-art-ph y el × a .ob-cover-x (sección M4). */
+
+/* Tooltips 1-bit (solo chrome fuera de scrollers): caja de tinta con texto en
+   papel, borde de 2 px, esquinas rectas, tipografía de texto y SIN sombra
+   difusa ni blur. Se muestra al pasar el ratón o al enfocar con teclado; el
+   `title` nativo se retira en las piezas que usan data-tip para no duplicar.
+   Las filas, la cola y la barra lateral conservan `title` nativo: un ::after
+   ahí lo recortaría el contenedor con scroll. Posición por defecto: encima y
+   centrado; variantes data-tip-pos="abajo" y data-tip-al="fin|inicio". */
+body.onebit [data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; left: 50%; bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  display: none; z-index: 95; pointer-events: none;
+  max-width: 44ch; padding: 2px 7px;
+  background: var(--ink); color: var(--paper); border: 2px solid var(--ink);
+  font-family: var(--font-text); font-size: 12px; font-weight: 400; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left;
+}
+body.onebit [data-tip]:hover::after,
+body.onebit [data-tip]:focus-visible::after { display: block; }
+body.onebit [data-tip][data-tip-pos="abajo"]::after { bottom: auto; top: calc(100% + 6px); }
+body.onebit [data-tip][data-tip-al="fin"]::after { left: auto; right: 0; transform: none; }
+body.onebit [data-tip][data-tip-al="inicio"]::after { left: 0; transform: none; }
+/* Anclaje: hosts sin posición propia que pasan a relative (lista explícita y
+   segura; el × de la portada (.ob-cover-x) ya es absolute y ancla a la
+   lámina, que es relative; los «⋯» de contexto viven en .ctx-more, que ya es
+   relative). */
+body.onebit footer.player button[data-tip],
+body.onebit .err button[data-tip],
+body.onebit .notice button[data-tip] { position: relative; }
+
+/* ---- M4: diálogos, Ajustes, asistente, descargas y avisos 1-bit ----------
+   La ventana de TODOS los diálogos la dibuja onebit/Window.svelte (borde de
+   2 px, sombra dura, barra con chip y «×»); onebit/ObModal.svelte añade el
+   scrim, el cierre con Esc y el foco inicial. Aquí van el cuerpo de cada
+   diálogo y sus controles: solo tinta/papel, esquinas rectas y sin sombras
+   difusas (la regla global de body.onebit ya fuerza radio 0 en todo). */
+body.onebit .ob-scrim {
+  position: fixed; left: 0; right: 0; top: 0; bottom: 72px;  /* no tapa el reproductor */
+  display: grid; place-items: center; padding: 20px;
+  background: var(--scrim); z-index: 50;
+}
+
+body.onebit .ob-dlg {
+  width: min(var(--ob-dlg-w, 420px), 94vw);
+  max-height: 84vh; display: flex; flex-direction: column;
+}
+body.onebit .ob-dlg .ob-body {
+  padding: 12px 14px; overflow-y: auto; overscroll-behavior: contain;
+}
+body.onebit .ob-dlg .hint { padding: 0; font-size: 12.5px; }
+body.onebit .ob-x {
+  width: 26px; height: 26px; padding: 0; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+body.onebit .ob-nota { color: var(--ink-soft); font-size: 13px; }
+body.onebit .ob-input { width: 100%; }
+body.onebit .ob-acts {
+  display: flex; gap: 8px; margin-top: 14px;
+  justify-content: flex-end; align-items: center; flex-wrap: wrap;
+}
+body.onebit .ob-acts-split { justify-content: space-between; }
+body.onebit .ob-acts .hint { max-width: 46ch; }
+
+/* Controles de diálogo: caja de tinta de 2 px sobre papel (sin radios ni
+   matices); el foco discontinuo lo pone la regla global de body.onebit. */
+body.onebit .ob-dlg input:not([type="checkbox"]):not([type="range"]),
+body.onebit .ob-dlg select {
+  background: var(--paper); color: var(--ink);
+  border: 2px solid var(--ink); padding: 6px 9px;
+  font: inherit; font-size: 13.5px; min-width: 0;
+}
+body.onebit .ob-dlg select { -webkit-appearance: none; appearance: none; padding-right: 30px; cursor: pointer; }
+body.onebit .ob-dlg select option { background: var(--paper); color: var(--ink); }
+body.onebit .ob-dlg input[type="checkbox"] {
+  -webkit-appearance: none; appearance: none; padding: 0;
+  width: 15px; height: 15px; flex: none; cursor: pointer;
+  border: 2px solid var(--ink); background: var(--paper);
+}
+/* Comprobado = relleno (como los puntos de estado de la barra lateral); el
+   estado real lo anuncia el propio checkbox, nunca solo el relleno. */
+body.onebit .ob-dlg input[type="checkbox"]:checked { background: var(--ink); }
+body.onebit .ob-dlg input[type="checkbox"]:focus-visible {
+  outline: 2px dashed var(--ink); outline-offset: 2px;
+}
+
+/* Ajustes: navegación lateral que DESPLAZA a cada sección (no oculta
+   ninguna: antes las seis eran un único scroll). El panel es el que scrollea;
+   la nav queda fija. */
+body.onebit .ob-set {
+  display: grid; grid-template-columns: 178px minmax(0, 1fr); gap: 14px;
+  min-height: 340px;
+}
+body.onebit .ob-set-nav {
+  display: flex; flex-direction: column; gap: 4px; align-self: start;
+  border-right: 2px solid var(--ink); padding-right: 10px;
+}
+body.onebit .ob-set-nav button {
+  font-family: var(--font-pixel); font-size: 13.5px;
+  text-align: left; justify-content: flex-start;
+}
+body.onebit .ob-set-nav button.on { background: var(--ink); color: var(--paper); }
+body.onebit .ob-set-pane {
+  display: flex; flex-direction: column; gap: 18px;
+  overflow-y: auto; overscroll-behavior: contain;
+  max-height: min(60vh, 520px); padding-right: 4px;
+}
+body.onebit .ob-sec { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+body.onebit .ob-sec h3 {
+  margin: 0; width: 100%; padding-bottom: 4px;
+  font-family: var(--font-pixel); font-size: 14px; font-weight: 700;
+  border-bottom: 2px solid var(--ink);
+}
+body.onebit .ob-sec .hint { max-width: 64ch; }
+body.onebit .ob-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+body.onebit .ob-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+body.onebit .ob-mine {
+  display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+  width: 100%; max-height: 180px; overflow-y: auto;
+}
+body.onebit .ob-engine {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  border: 2px solid var(--ink); background: var(--paper); padding: 2px 8px;
+  font-size: 12.5px;
+}
+body.onebit .ob-alerta { font-weight: 700; }
+
+/* Asistente: rejilla de tarjetas (3×3) con borde de 2 px; el hover global de
+   botones las invierte (la selección se distingue por inversión, no por
+   color). En ventanas estrechas pasan a 2 y a 1 columna. */
+body.onebit .ob-add-cards {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px; width: 100%;
+}
+body.onebit .ob-add-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; min-height: 84px; padding: 14px 8px; text-align: center; font-size: 13px;
+}
+body.onebit .ob-add-card span { overflow-wrap: anywhere; }
+@media (max-width: 560px) { body.onebit .ob-add-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 380px) { body.onebit .ob-add-cards { grid-template-columns: 1fr; } }
+
+/* Descargas: chip en la barra de menú y panel colgando debajo (el anclaje lo
+   fija la regla .mb-dl de arriba). */
+body.onebit .ob-dlchip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--paper); color: var(--ink); padding: 2px 8px; font-size: 12.5px;
+}
+body.onebit .ob-dlpanel {
+  display: flex; flex-direction: column; gap: 6px; font-size: 13px;
+  width: 300px; max-width: min(86vw, 300px); padding: 10px 12px;
+  background: var(--paper); color: var(--ink);
+  border: 2px solid var(--ink); box-shadow: var(--shadow-hard);
+}
+body.onebit .ob-dl-head { display: flex; align-items: center; gap: 8px; }
+body.onebit .ob-dl-head .ob-dl-x { width: 26px; height: 26px; padding: 0; }
+body.onebit .ob-dl-head .ob-dl-x:first-of-type { margin-left: auto; }
+body.onebit .ob-dl-now { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.onebit .ob-dl-sub { color: var(--ink-soft); font-size: 12px; }
+body.onebit .ob-dl-warn { font-weight: 700; }
+body.onebit .ob-dl-fails {
+  margin: 0; padding-left: 14px; color: var(--ink-soft);
+  font-size: 12px; max-height: 96px; overflow-y: auto;
+}
+body.onebit .ob-dl-fails li { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.onebit .ob-dl-foot { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* CSV: vista previa, barrido y variantes. Los estados del chip se distinguen
+   por TEXTO (cada estado escribe el suyo) y, además, por forma: discontinuo =
+   dudosa/en curso, invertido = no encontrada, negrita = exacta. */
+body.onebit .ob-csv-tools {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 10px; margin-top: 8px;
+}
+body.onebit .ob-csv-tools-btns {
+  display: inline-flex; gap: 8px; align-items: center;
+  justify-content: flex-end; flex-wrap: wrap;
+}
+body.onebit .ob-csv-list { margin-top: 10px; height: min(52vh, 420px); display: flex; flex-direction: column; }
+body.onebit .ob-csv-list .virt { border: 2px solid var(--ink); }
+body.onebit .ob-csv-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) 48px 28px 28px 96px;
+  gap: 8px; align-items: center; height: 100%; padding: 0 10px;
+  font-size: 13px; border-bottom: 1px solid var(--rule);
+}
+body.onebit .ob-csv-t { font-weight: 600; }
+body.onebit .ob-csv-t, body.onebit .ob-csv-a, body.onebit .ob-csv-al {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body.onebit .ob-csv-a, body.onebit .ob-csv-al, body.onebit .ob-csv-d, body.onebit .ob-csv-n {
+  color: var(--ink-soft);
+}
+body.onebit .ob-csv-d { text-align: right; font-variant-numeric: tabular-nums; }
+body.onebit .ob-csv-n { font-size: 11px; text-align: right; }
+body.onebit .ob-csv-play, body.onebit .ob-csv-var {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; padding: 0;
+}
+body.onebit .ob-csv-play:disabled { opacity: 0.4; }
+body.onebit .ob-csv-chip {
+  justify-self: start; padding: 1px 7px; font-size: 11px; white-space: nowrap;
+  background: var(--paper); color: var(--ink); border: 2px solid var(--ink);
+}
+body.onebit .ob-csv-chip[data-state="loading"] { font-style: italic; color: var(--ink-soft); border-style: dashed; }
+body.onebit .ob-csv-chip[data-state="dudosa"] { border-style: dashed; font-weight: 700; }
+body.onebit .ob-csv-chip[data-state="no_encontrada"],
+body.onebit .ob-csv-chip[data-state="sin_match"] { background: var(--ink); color: var(--paper); }
+body.onebit .ob-csv-chip[data-state="exacta"] { font-weight: 700; }
+
+body.onebit .ob-cvar-search { display: flex; gap: 8px; margin-top: 4px; }
+body.onebit .ob-cvar-search input { flex: 1; min-width: 0; }
+body.onebit .ob-cvar-empty { padding: 14px 0; color: var(--ink-soft); }
+body.onebit .ob-cvar-list {
+  margin-top: 10px; max-height: min(48vh, 380px); overflow: auto;
+  border: 2px solid var(--ink);
+}
+body.onebit .ob-cvar-row {
+  display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) 46px 84px auto;
+  gap: 8px; align-items: center; padding: 6px 10px; font-size: 13px;
+  border-bottom: 1px solid var(--rule);
+}
+body.onebit .ob-cvar-row:last-child { border-bottom: 0; }
+body.onebit .ob-cvar-t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.onebit .ob-cvar-a, body.onebit .ob-cvar-d {
+  color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body.onebit .ob-cvar-d { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Atajos (Ayuda): lista de definiciones en tipografía de chrome. */
+body.onebit .ob-atajos { margin: 2px 0 0; display: flex; flex-direction: column; gap: 7px; }
+body.onebit .ob-atajos > div { display: flex; gap: 12px; align-items: baseline; }
+body.onebit .ob-atajos dt {
+  flex: none; width: 12ch; font-family: var(--font-pixel);
+  font-size: 14px; font-weight: 700;
+}
+body.onebit .ob-atajos dd { margin: 0; font-size: 13px; color: var(--ink-soft); }
+
+/* Wrapper para anclar la lámina a la miniatura con position:absolute. */
+.cover-wrapper {
+  position: relative;
+}
+
+/* Contenedor de arte cuadrado con recorte (reutilizable: lámina, reproductor, filas).
+   aspect-ratio: 1/1; overflow: hidden; border-radius: 0; border 2px en el contenedor.
+   --art-zoom: zoom UNIFORME (1 por defecto; 1.333 para 4:3 letterbox YouTube).
+   Sombra dura SOLO en lámina (.art-container--lamina). Miniaturas: solo borde 2px. */
+.art-container {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  --art-zoom: 1;
+}
+.art-container--lamina {
+  box-shadow: var(--shadow-hard);
+}
+.art-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(var(--art-zoom));
+  transform-origin: center;
+  /* Sin border ni shadow en la imagen: va en el contenedor */
+}
+
+/* Wrapper para anclar la lámina a la miniatura con position:absolute. */
+.cover-wrapper {
+  position: relative;
+}
+
+/* Portada: lámina 1-bit (no modal), anclada a la miniatura con position:absolute.
+   bottom = 8px gap + padding-top+border-top del footer (--player-pad-top).
+   left: 0 = alineado con el borde izquierdo de la miniatura.
+   max-width: min(320px, 92vw) para no tapar la cola.
+   max-height: 80vh para que no desborde viewport; el arte se reduce si hace falta. */
+body.onebit .ob-cover {
+  position: absolute;
+  bottom: calc(100% + 8px + var(--player-pad-top));
+  left: 0;
+  max-width: min(320px, 92vw);
+  max-height: 80vh;
+  width: max-content;
+  padding: 22px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-hard);
+  z-index: 60;
+}
+body.onebit .ob-cover-x { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; min-width: 32px; min-height: 32px; }
+body.onebit .ob-art {
+  width: 210px; max-width: 56vw; aspect-ratio: 1;
+  max-height: calc(80vh - 100px); /* deja espacio para padding, título, artista */
+}
+body.onebit .ob-art-ph {
+  width: 210px; max-width: 56vw; aspect-ratio: 1; display: grid; place-items: center;
+  background: var(--paper-2); border: 2px solid var(--ink); color: var(--ink);
+  max-height: calc(80vh - 100px);
+}
+body.onebit .ob-cover-title { font-family: var(--font-pixel); font-weight: 700; font-size: 15px; margin-top: 14px; }
+body.onebit .ob-cover-sub { color: var(--ink-soft); font-size: 13px; margin-top: 4px; }
+
+/* Errores y avisos: ya son tinta/papel por tokens; el borde inferior sube a
+   2 px como el resto del chrome 1-bit. */
+body.onebit .err, body.onebit .notice { border-bottom: 2px solid var(--ink); }
+
+/* Portada de estreno (biblioteca vacía): la misma imagen que la portada del
+   proyecto, enmarcada como una lámina 1-bit. Ocupa el hueco de la lista. */
+section.library.welcome .virt { display: none; }
+.home-cover {
+  flex: 1; min-height: 0; overflow: auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px; padding: 28px 20px; text-align: center;
+}
+.home-cover-frame {
+  background: var(--paper); border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink); padding: 8px;
+  width: min(680px, 92%); flex: none;
+}
+.home-cover-img { display: block; width: 100%; height: auto; }
+.home-cover-lead { margin: 0; color: var(--muted); font-size: 14px; }
+.home-cover-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+@media (max-height: 640px) {
+  .home-cover-frame { width: min(420px, 88%); }
+  .home-cover { justify-content: flex-start; }
+}

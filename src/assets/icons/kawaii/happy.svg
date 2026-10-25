@@ -1,0 +1,8 @@
+<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round">
+  <circle cx="24" cy="25" r="15"/>
+  <path d="M16.5 24 Q18.5 21.5 20.5 24 M27.5 24 Q29.5 21.5 31.5 24" stroke-width="3.4"/>
+  <path d="M19 30 Q24 36 29 30 Z" fill="currentColor" stroke="none"/>
+  <ellipse cx="15" cy="29" rx="2" ry="1.2" style="fill:var(--accent)" stroke="none" opacity="0.6"/>
+  <ellipse cx="33" cy="29" rx="2" ry="1.2" style="fill:var(--accent)" stroke="none" opacity="0.6"/>
+  <path d="M24 4 L30 1 L30 7 Z M24 4 L18 1 L18 7 Z" style="fill:var(--accent)" stroke="none"/>
+</svg>

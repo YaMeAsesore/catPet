@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "resources": {
+      "binaries/yt-dlp-x86_64-unknown-linux-gnu": "bin/yt-dlp",
+      "binaries/deno-x86_64-unknown-linux-gnu": "bin/deno",
+      "binaries/ffmpeg-x86_64-unknown-linux-gnu": "bin/ffmpeg"
+    }
+  }
+}

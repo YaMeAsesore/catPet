@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none"
+     stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Vinilo + play: logo principal de Música (imágenes 1 y 2).
+       Los aros mueren en la base del triángulo, así el interior del play queda
+       transparente sin máscaras ni ids duplicados. -->
+  <path d="M280 82.5 A180 180 0 1 0 280 429.5" />
+  <path d="M280 113.9 A150 150 0 1 0 280 398.1" />
+  <path d="M280 146 A120 120 0 1 0 280 366" />
+  <path d="M280 179.9 A90 90 0 1 0 280 332.1" />
+  <path d="M280 220 A60 60 0 1 0 280 292" />
+  <circle cx="232" cy="256" r="30" />
+  <rect x="222" y="246" width="20" height="20" />
+  <path d="M280 82.5 L452 256 L280 429.5 Z" />
+</svg>

@@ -1,0 +1,53 @@
+LICENCIAS DE LOS BINARIOS EMPAQUETADOS Y SUSTITUCIÓN DE libmpv-2.dll
+=====================================================================
+(Windows — este texto se instala junto a musica.exe, en la carpeta `licenses/`)
+
+1) libmpv-2.dll (reproducción; libmpv / mpv)
+   - Variante LGPL (mpv commit 7c4f662c0, -Dgpl=false) empaquetada por zhongfly/mpv-winbuild,
+     release con TAG FIJO:
+     https://github.com/zhongfly/mpv-winbuild/releases/tag/2026-10-14-7c4f662c08
+     (asset mpv-dev-lgpl-x86_64-20261014-git-7c4f662c08.7z; el DLL está en la raíz del 7z)
+     sha256 del 7z: 37fd9c57c2c050e23162c08b6fe3eea0555a6b6e0b2d08470555834aea0a18d3
+   - Licencia: LGPL. El release describe esta variante como LGPLv3; el paquete oficial
+     incluye el texto LGPL-2.1. Ambos textos se incluyen aquí:
+       licenses/libmpv-LICENSE.LGPL  (texto LGPL-2.1 tal cual lo trae el paquete de mpv)
+       licenses/libmpv-LGPLv3.txt    (texto LGPLv3 de GNU)
+   - Dentro de la DLL hay FFmpeg compilado con --enable-version3 --enable-libopus
+     --enable-libvpx (sin --enable-gpl); texto base en licenses/ffmpeg-COPYING.LGPLv2.1.
+
+2) yt-dlp.exe (descargas de audio)
+   - Release oficial con TAG FIJO https://github.com/yt-dlp/yt-dlp/releases/tag/2026.08.19
+     (asset yt-dlp.exe; sha256 fijado en CI)
+   - Licencia: Unlicense (dominio público). Texto: licenses/yt-dlp-LICENSE.
+
+3) ffmpeg.exe (transcodificación a mp3/m4a/opus)
+   - Build estático "lgpl" de zhongfly/mpv-winbuild, release con TAG FIJO
+     https://github.com/zhongfly/mpv-winbuild/releases/tag/2026-10-14-7c4f662c08
+     (asset ffmpeg-lgpl-x86_64-git-21441b340.7z; solo ffmpeg.exe, en la raíz del 7z)
+     sha256 del 7z: 13939d7166e1335792338a88666061326f552ed786e44f57e6bfaddd33a517c7
+   - Licencia: LGPL-2.1 o posterior. Texto: licenses/ffmpeg-COPYING.LGPLv2.1.
+
+4) CÓMO SUSTITUIR libmpv-2.dll (sin reconstruir la app; obligación LGPL)
+   a. Cierra musica.exe por completo.
+   b. libmpv-2.dll está en la MISMA carpeta que musica.exe. La instalación por defecto
+      es para el usuario actual en %LOCALAPPDATA%\Programs\musica (sin permisos de
+      administrador, pensada justamente para poder sustituir este archivo).
+   c. Guarda una copia de seguridad del DLL actual.
+   d. Descarga la nueva libmpv-2.dll (variante LGPL, x86_64) del mismo release de
+      zhongfly/mpv-winbuild con tag fijo que usa el CI (sección 1), comprueba el
+      sha256 del 7z y extrae el DLL. Otro build LGPL equivalente de mpv (libmpv 2.x)
+      también sirve.
+   e. Reemplázalo conservando exactamente el nombre libmpv-2.dll.
+   f. Si la app no arranca, restaura la copia del paso c.
+   - De igual forma puedes sustituir yt-dlp.exe y ffmpeg.exe (mismo nombre, misma carpeta)
+     para actualizarlos, y los textos de licenses/ para comprobar su licencia.
+
+5) CÓMO OBTENER EL CÓDIGO FUENTE
+   - mpv/libmpv: https://github.com/mpv-player/mpv (commit 7c4f662c0; el empaquetado
+     LGPL lo hace zhongfly/mpv-winbuild en el tag 2026-10-14-7c4f662c08)
+   - FFmpeg (empotrado en libmpv-2.dll): https://github.com/FFmpeg/FFmpeg (config verable
+     con `strings libmpv-2.dll | grep -- --prefix`)
+   - yt-dlp: https://github.com/yt-dlp/yt-dlp
+   - ffmpeg.exe: https://github.com/FFmpeg/FFmpeg (config verable con
+     `strings ffmpeg.exe | grep -- --prefix`); el build lgpl empaquetado es de
+     zhongfly/mpv-winbuild (tag 2026-10-14-7c4f662c08)

@@ -1,0 +1,9 @@
+<svg viewBox="0 0 48 48" fill="currentColor" stroke="none">
+  <rect x="8" y="8" width="6" height="6"/>
+  <rect x="18" y="8" width="22" height="6"/>
+  <rect x="8" y="21" width="6" height="6"/>
+  <rect x="18" y="21" width="22" height="6"/>
+  <rect x="8" y="34" width="6" height="6"/>
+  <rect x="18" y="34" width="12" height="6"/>
+  <path d="M34 32l10 6-10 6z"/>
+</svg>
